@@ -4,6 +4,10 @@
 
 # KIBAMaterialGUI
 
+<p align="center">
+  <img src="Packages/com.kibalab.kibamaterialgui/Website~/static/img/attributes/attribute-unity-built-ins.png" alt="KIBAMaterialGUI material inspector preview" width="760">
+</p>
+
 KIBAMaterialGUI는 ShaderLab Attribute로 Unity 머티리얼 인스펙터를 구성하는 에디터 전용 `ShaderGUI` 패키지입니다.
 
 셰이더 작성자는 별도 커스텀 에디터를 직접 작성하지 않고도 그룹, 검색, 조건부 표시, 검증, 프리셋, 현지화, 커스텀 렌더러 확장을 사용할 수 있습니다.
