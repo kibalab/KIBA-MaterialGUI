@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - release
     tags:
       - '*'
 
@@ -16,7 +16,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.guard.outputs.allowed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Allow only release branch refs
+        id: guard
+        shell: bash
+        run: |
+          git fetch origin +refs/heads/release:refs/remotes/origin/release
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.ref_name }}" = "release" ]; then
+              echo "allowed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Docs workflow_dispatch must run from the release branch."
+              echo "allowed=false" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
+
+          if [ "${GITHUB_REF}" = "refs/heads/release" ]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]] && git merge-base --is-ancestor "${GITHUB_SHA}" "origin/release"; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Docs deployment only runs for the release branch or tags contained in origin/release."
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   deploy:
+    needs: guard
+    if: needs.guard.outputs.allowed == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
