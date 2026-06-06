@@ -17,7 +17,7 @@ KIBAMaterialGUI는 ShaderLab Attribute로 Unity 머티리얼 인스펙터를 구
 VCC에 KIBALAB VPM listing을 추가한 뒤 `KIBAMaterialGUI`를 설치합니다.
 
 ```text
-https://vpm.kiba.red/vcc
+https://vpm.kiba.red/
 ```
 
 직접 Unity 프로젝트에 임베드하려면 이 저장소의 패키지 폴더를 복사합니다.
