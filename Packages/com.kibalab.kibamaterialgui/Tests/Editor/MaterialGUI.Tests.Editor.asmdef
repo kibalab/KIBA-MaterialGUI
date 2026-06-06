@@ -1,0 +1,23 @@
+{
+    "name": "MaterialGUI.Tests.Editor",
+    "rootNamespace": "KIBA_.KIBAMaterialGUI.Tests.Editor",
+    "references": [
+        "MaterialGUI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "noEngineReferences": false
+}
+
+

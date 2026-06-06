@@ -1,0 +1,25 @@
+* text=auto
+
+*.cs text eol=crlf
+*.shader text eol=crlf
+*.cginc text eol=crlf
+*.hlsl text eol=crlf
+*.json text eol=crlf
+*.asmdef text eol=crlf
+*.md text eol=crlf
+*.ps1 text eol=crlf
+*.yml text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.tga binary
+*.psd binary
+*.fbx binary
+*.blend binary
+*.mat -diff
+*.asset -diff
+*.unity -diff
+*.prefab -diff
+*.playable -diff

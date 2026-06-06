@@ -97,12 +97,6 @@
         "com.unity.nuget.newtonsoft-json": "2.0.2"
       }
     },
-    "com.vrchat.demo-template": {
-      "version": "file:com.vrchat.demo-template",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
@@ -345,6 +339,12 @@
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.subsystems": "1.0.0"
       }
+    },
+    "com.kibalab.kibamaterialgui": {
+      "version": "file:com.kibalab.kibamaterialgui",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     }
   }
 }

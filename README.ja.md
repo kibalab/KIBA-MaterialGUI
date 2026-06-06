@@ -2,202 +2,92 @@
 
 ---
 
-# VRChat VPM Package Template for KIBALAB
+# KIBAMaterialGUI
 
-VRChat Creator Companion (VCC) / VRChat Package Manager (VPM) パッケージ配布用のテンプレートです。
+KIBAMaterialGUI は、ShaderLab Attribute から Unity のマテリアルインスペクターを構築する Editor 専用 `ShaderGUI` パッケージです。
 
-**タグ(リリース)をプッシュすると**、GitHub Actionsが自動的に：
-1. リリースを作成 (zip + unitypackage + package.json)
-2. VPMバックエンドにパッケージ情報を登録
-3. 即座に[vpm.kiba.red](https://vpm.kiba.red)に反映
+シェーダー作者は専用のカスタムエディターを一から書かなくても、グループ、検索、条件付き表示、検証、プリセット、ローカライズ、カスタムレンダラー拡張を利用できます。
 
----
+## インストール
 
-## 要件
+VCC に KIBALAB VPM listing を追加し、`KIBAMaterialGUI` をインストールします。
 
-### 1) パッケージ構造 (UPM/VPM標準)
-
-```
-Packages/<PACKAGE_ID>/
-├── package.json
-├── Runtime/
-├── Editor/
-└── package-media/        # (オプション) サムネイル画像
-    └── thumbnail.png
+```text
+https://vpm.kiba.red/vcc
 ```
 
-例：
-```
-Packages/com.kibalab.mypackage/package.json
+埋め込み開発では、このパッケージフォルダーを Unity プロジェクトへコピーします。
+
+```text
+Packages/com.kibalab.kibamaterialgui
 ```
 
-### 2) package.json 必須フィールド
+## クイックスタート
 
-```json
+シェーダーにカスタムエディターを指定します。
+
+```shaderlab
+CustomEditor "KIBA_.KIBAMaterialGUI.Editor.MaterialGUI"
+```
+
+ShaderLab の `Properties` に Attribute を追加します。
+
+```shaderlab
+Properties
 {
-  "name": "com.kibalab.mypackage",
-  "displayName": "My Package",
-  "version": "1.0.0",
-  "description": "パッケージの説明",
-  "author": {
-    "name": "Your Name",
-    "email": "your@email.com",
-    "url": "https://your-site.com"
-  },
-  "vpmDependencies": {
-    "com.vrchat.worlds": "3.x.x"
-  }
+    [Group(Basics)] _MainTex ("Main Texture", 2D) = "white" {}
+    [Group(Basics)] _Tint ("Tint", Color) = (1,1,1,1)
+
+    [Group(Advanced,Lighting)][Toggle] _LightingToggle ("Lighting", Float) = 0
+    [Group(Advanced,Lighting)][ShowIf(_LightingToggle, 1)] _ShadowColor ("Shadow Color", Color) = (0,0,0,1)
 }
 ```
 
----
+## 主な Attribute
 
-## セットアップ方法
+- `[Group(...)]`: プロパティをグループやネストしたグループへ配置します。
+- `[ShowIf(...)]`: 他の numeric プロパティ値に応じて表示を制御します。
+- `[Vector(...)]`: Vector フィールドのコンポーネント表示を制御します。
+- `[MinMaxSlider(...)]`: Vector プロパティを min/max スライダーとして表示します。
+- `[FlexibleRange(...)]`: 意図的な範囲外値を許可する float/range UI を提供します。
+- `[Unit(...)]`, `[Space(...)]`, `[Divider]`: インスペクター表示用のヒントを追加します。
+- `[SegmentedEnum]`, `[GradientTexture]`, `[Validate(...)]`: enum、gradient texture、検証ワークフローを拡張します。
 
-### 1) Repository Variables
+Unity 標準の `[Enum]`, `[KeywordEnum]`, `[Toggle]`, `[ToggleOff]`, `[HDR]`, `[NoScaleOffset]` もサポートします。
 
-GitHubリポジトリ → **Settings** → **Secrets and variables** → **Actions** → **Variables**
+## ドキュメント
 
-| Variable | 説明 | 例 |
-|----------|------|-----|
-| `PACKAGE_NAME` | パッケージフォルダ名 | `com.kibalab.mypackage` |
-| `VPM_BACKEND_URL` | VPMバックエンドURL | `https://vpm.kiba.red` |
+ドキュメントは GitHub Pages にデプロイされます。
 
-### 2) Repository Secrets
+```text
+https://kibalab.github.io/KIBA-MaterialGUI/
+```
 
-GitHubリポジトリ → **Settings** → **Secrets and variables** → **Actions** → **Secrets**
+パッケージ内の `Website~/docs` にも quickstart、attribute reference、custom renderer、editor injection、scripting API ドキュメントが含まれています。
 
-| Secret | 説明 |
-|--------|------|
-| `VPM_API_KEY` | VPMバックエンドAPIキー (管理者に問い合わせ) |
+## リリース設定
 
----
+このリポジトリは KIBALAB VPM パッケージテンプレートのリリースワークフローを使用します。
 
-## 使用方法
+| 項目 | 値 |
+| --- | --- |
+| Repository Variable `PACKAGE_NAME` | `com.kibalab.kibamaterialgui` |
+| Repository Variable `VPM_BACKEND_URL` | `https://vpm.kiba.red` |
+| Repository Secret `VPM_API_KEY` | VPM backend API key |
 
-### 新しいパッケージの作成
+`release.yml` は `PACKAGE_NAME` が未設定の場合でも `com.kibalab.kibamaterialgui` を既定値として使用します。
 
-1. **Use this template**で新しいリポジトリを作成
-2. `Packages/`フォルダ配下にパッケージIDでフォルダを作成
-3. `package.json`を作成
-4. Repository Variables/Secretsを設定
+`docs.yml` は `main` またはリリースタグが push されたときに Docusaurus ドキュメントを GitHub Pages へデプロイします。
 
-### リリースのデプロイ
+## リリース
 
-1. `package.json`の`version`を更新
-2. コミット & プッシュ
-3. 同じバージョンでタグを作成 & プッシュ
+Git タグは `package.json` の `version` と一致している必要があります。
 
 ```bash
-# バージョン更新後にコミット
-git add Packages/com.kibalab.mypackage/package.json
-git commit -m "Bump version to 1.0.1"
-git push
-
-# タグを作成してプッシュ
-git tag 1.0.1
-git push origin 1.0.1
+git tag 0.1.0
+git push origin 0.1.0
 ```
 
-> タグのバージョンとpackage.jsonのバージョンが一致している必要があります。（`v1.0.1`または`1.0.1`形式の両方をサポート）
+## ライセンス
 
----
-
-## サムネイル画像
-
-VPMフロントエンドに表示されるサムネイルを設定できます。
-
-### 方法1: パッケージ内サムネイル (推奨)
-```
-Packages/<PACKAGE_ID>/package-media/thumbnail.png
-```
-
-### 方法2: リポジトリルートサムネイル
-```
-.github/vpm-thumbnail.png
-```
-
-**推奨仕様：**
-- 形式: PNG
-- サイズ: 512x512または16:9比率
-- 容量: 500KB以下
-
----
-
-## ワークフロー構造
-
-### Reusable Workflow (中央管理)
-
-すべてのパッケージリポジトリが`vpm-package-template`のワークフローを参照します。
-中央ワークフローを変更すると**すべてのパッケージリポジトリに自動適用**されます。
-
-```
-vpm-package-template/.github/workflows/
-├── vpm-release.yml    # 再利用可能なワークフロー (実際のロジック)
-└── release.yml        # 使用例
-
-各パッケージリポジトリ/.github/workflows/
-└── release.yml        # 中央ワークフローを呼び出し (16行)
-```
-
-### 各パッケージリポジトリのrelease.yml
-
-```yaml
-name: Build Release
-
-on:
-  workflow_dispatch:
-  push:
-    tags:
-      - '*'
-
-permissions:
-  contents: write
-
-jobs:
-  release:
-    uses: kibalab/vpm-package-template/.github/workflows/vpm-release.yml@main
-    with:
-      package_name: ${{ vars.PACKAGE_NAME }}
-      vpm_backend_url: ${{ vars.VPM_BACKEND_URL || 'https://vpm.kiba.red' }}
-    secrets:
-      VPM_API_KEY: ${{ secrets.VPM_API_KEY }}
-```
-
-### ワークフロー動作
-
-1. **ビルド**
-   - `Packages/<PACKAGE_NAME>`フォルダをZIPに圧縮
-   - `.unitypackage`ファイルを生成
-
-2. **GitHub Releaseの作成**
-   - ZIP、unitypackage、package.jsonを添付
-
-3. **VPMバックエンドへの登録**
-   - パッケージ情報をバックエンドAPIに送信
-   - サムネイルURLを自動検出して登録
-
----
-
-## トラブルシューティング
-
-### ワークフロー失敗: "Tag does not match version"
-- `package.json`の`version`とGitタグが一致しているか確認
-- タグは`1.0.0`または`v1.0.0`形式のいずれも可能
-
-### パッケージがリストに表示されない
-- GitHub Actionsログでバックエンドのレスポンスを確認
-- `VPM_BACKEND_URL`と`VPM_API_KEY`の設定を確認
-- バックエンド管理者にAPIキーの有効性を問い合わせ
-
-### サムネイルが表示されない
-- ファイルパスが正確か確認
-- 画像が`main`ブランチにプッシュされているか確認
-- Raw URLにアクセスできるか確認
-
----
-
-## 関連リンク
-
-- [VPMパッケージリスト](https://vpm.kiba.red)
-- [VCCに追加](https://vpm.kiba.red/vcc)
+MIT

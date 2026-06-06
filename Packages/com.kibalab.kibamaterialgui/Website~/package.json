@@ -1,0 +1,17 @@
+{
+  "name": "com.kibalab.kibamaterialgui",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "docs:start": "docusaurus start --host 127.0.0.1 --port 3000",
+    "docs:build": "docusaurus build",
+    "docs:build:all": "docusaurus build",
+    "docs:serve": "docusaurus serve --dir build --host 127.0.0.1 --port 3000 --no-open"
+  },
+  "devDependencies": {
+    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/preset-classic": "^3.8.1",
+    "@easyops-cn/docusaurus-search-local": "^0.55.2",
+    "@mdx-js/react": "^3.1.0"
+  }
+}

@@ -1,0 +1,79 @@
+{
+    "<Groups>k__BackingField": [
+        {
+            "<ShaderNameRegex>k__BackingField": "^KIBA_/Samples/AllElementsTest$",
+            "<Presets>k__BackingField": [
+                {
+                    "<Name>k__BackingField": "AllElements_WarmPreview",
+                    "<Values>k__BackingField": [
+                        {
+                            "<Property>k__BackingField": "_SampleColor",
+                            "<Float>k__BackingField": 0.0,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [1.0, 0.72, 0.42, 1.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleColorHDR",
+                            "<Float>k__BackingField": 0.0,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [1.8, 1.05, 0.45, 1.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleFloat",
+                            "<Float>k__BackingField": 0.75,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleRange",
+                            "<Float>k__BackingField": 0.8,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleVec2",
+                            "<Float>k__BackingField": 0.0,
+                            "<Vector4>k__BackingField": [1.0, 0.5, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleMinMax01",
+                            "<Float>k__BackingField": 0.0,
+                            "<Vector4>k__BackingField": [0.15, 0.85, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleToggle",
+                            "<Float>k__BackingField": 1.0,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_SampleToggleColor",
+                            "<Float>k__BackingField": 0.0,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [1.0, 0.35, 0.2, 1.0],
+                            "<TextureGuid>k__BackingField": ""
+                        },
+                        {
+                            "<Property>k__BackingField": "_Cull",
+                            "<Float>k__BackingField": 2.0,
+                            "<Vector4>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<Color>k__BackingField": [0.0, 0.0, 0.0, 0.0],
+                            "<TextureGuid>k__BackingField": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+

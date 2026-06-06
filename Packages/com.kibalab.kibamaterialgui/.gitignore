@@ -1,0 +1,42 @@
+# Unity generated files
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/Logs/
+/UserSettings/
+/MemoryCaptures/
+
+# Unity generated project files
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Unity crash and build output
+sysinfo.txt
+*.stackdump
+*.apk
+*.aab
+*.unitypackage
+
+# Local package release output
+/*-dist/
+/Dist/
+
+# Docusaurus local output
+/Website~/node_modules/
+/Website~/.docusaurus/
+/Website~/build/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vs/
+.vscode/

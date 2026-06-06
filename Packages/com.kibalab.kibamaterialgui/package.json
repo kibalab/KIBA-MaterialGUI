@@ -1,0 +1,35 @@
+{
+  "name": "com.kibalab.kibamaterialgui",
+  "displayName": "KIBAMaterialGUI",
+  "version": "0.1.0",
+  "unity": "2021.3",
+  "description": "Attribute-driven Unity ShaderGUI framework for searchable, grouped, extensible material inspectors.",
+  "keywords": [
+    "shader",
+    "inspector",
+    "editor",
+    "material",
+    "shadergui"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kibalab/KIBA-MaterialGUI.git"
+  },
+  "documentationUrl": "https://kibalab.github.io/KIBA-MaterialGUI/",
+  "changelogUrl": "https://github.com/kibalab/KIBA-MaterialGUI/blob/main/Packages/com.kibalab.kibamaterialgui/CHANGELOG.md",
+  "licensesUrl": "https://github.com/kibalab/KIBA-MaterialGUI/blob/main/LICENSE",
+  "vpmDependencies": {},
+  "samples": [
+    {
+      "displayName": "All Elements Demo",
+      "description": "Large inspector sample shader with groups, filters, ShowIf, custom renderers, presets, and localization files.",
+      "path": "Samples/AllElementsDemo"
+    }
+  ],
+  "author": {
+    "name": "KIBA",
+    "email": "root@kiba.red",
+    "url": "https://vpm.kiba.red/"
+  }
+}

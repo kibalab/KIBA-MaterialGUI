@@ -1,0 +1,18 @@
+{
+  "version.label": {
+    "message": "현재",
+    "description": "The label for version current"
+  },
+  "sidebar.guides.category.Attributes": {
+    "message": "Attribute",
+    "description": "The label for category 'Attributes' in sidebar 'guides'"
+  },
+  "sidebar.guides.category.Custom Renderers": {
+    "message": "커스텀 렌더러",
+    "description": "The label for category 'Custom Renderers' in sidebar 'guides'"
+  },
+  "sidebar.guides.category.Editor Injection": {
+    "message": "에디터 인젝션",
+    "description": "The label for category 'Editor Injection' in sidebar 'guides'"
+  }
+}

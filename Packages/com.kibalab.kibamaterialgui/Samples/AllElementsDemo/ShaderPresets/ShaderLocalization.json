@@ -1,0 +1,1052 @@
+{
+  "DefaultCode": "EN",
+  "Languages": [
+    {
+      "Code": "EN",
+      "Entries": [
+        {
+          "Key": "ui:Language",
+          "Value": "Language"
+        },
+        {
+          "Key": "ui:GPUInstancing",
+          "Value": "GPU Instancing"
+        },
+        {
+          "Key": "ui:DoubleSided",
+          "Value": "Double Sided"
+        },
+        {
+          "Key": "ui:Expand",
+          "Value": "Expand"
+        },
+        {
+          "Key": "ui:Collapse",
+          "Value": "Collapse"
+        },
+        {
+          "Key": "ui:Presets",
+          "Value": "Presets"
+        },
+        {
+          "Key": "ui:RenderQueue",
+          "Value": "Render Queue"
+        },
+        {
+          "Key": "ui:RQ_FromShader",
+          "Value": "From Shader"
+        },
+        {
+          "Key": "ui:RQ_Background",
+          "Value": "Background"
+        },
+        {
+          "Key": "ui:RQ_Geometry",
+          "Value": "Geometry"
+        },
+        {
+          "Key": "ui:RQ_AlphaTest",
+          "Value": "AlphaTest"
+        },
+        {
+          "Key": "ui:RQ_Transparent",
+          "Value": "Transparent"
+        },
+        {
+          "Key": "ui:RQ_Overlay",
+          "Value": "Overlay"
+        },
+        {
+          "Key": "ui:Mixed",
+          "Value": "Mixed"
+        },
+        {
+          "Key": "ui:OverwriteTitle",
+          "Value": "Preset Exists"
+        },
+        {
+          "Key": "ui:OverwriteMsg",
+          "Value": "A preset with the same name already exists. Overwrite?"
+        },
+        {
+          "Key": "ui:Overwrite",
+          "Value": "Overwrite"
+        },
+        {
+          "Key": "ui:Cancel",
+          "Value": "Cancel"
+        },
+        {
+          "Key": "ui:NewPresetTitle",
+          "Value": "New Preset"
+        },
+        {
+          "Key": "ui:Name",
+          "Value": "Name"
+        },
+        {
+          "Key": "ui:Create",
+          "Value": "Create"
+        },
+        {
+          "Key": "ui:ShowAllGroups",
+          "Value": "Show All"
+        },
+        {
+          "Key": "ui:Filter",
+          "Value": "Filter"
+        },
+        {
+          "Key": "ui:FilterAll",
+          "Value": "All"
+        },
+        {
+          "Key": "ui:Changed",
+          "Value": "Changed"
+        },
+        {
+          "Key": "ui:Warnings",
+          "Value": "Warnings"
+        },
+        {
+          "Key": "ui:Textures",
+          "Value": "Textures"
+        },
+        {
+          "Key": "ui:Numbers",
+          "Value": "Numbers"
+        },
+        {
+          "Key": "ui:Colors",
+          "Value": "Colors"
+        },
+        {
+          "Key": "ui:NoPresets",
+          "Value": "No Presets"
+        },
+        {
+          "Key": "ui:Apply",
+          "Value": "Apply"
+        },
+        {
+          "Key": "ui:AddPresetFromCurrentAll",
+          "Value": "Add Preset from Current (All)"
+        },
+        {
+          "Key": "ui:CopyCurrentAsJsonAll",
+          "Value": "Copy Current as JSON (All)"
+        },
+        {
+          "Key": "ui:Empty",
+          "Value": "Empty"
+        },
+        {
+          "Key": "groupName:Properties",
+          "Value": "Properties"
+        },
+        {
+          "Key": "groupName:Textures",
+          "Value": "Textures"
+        },
+        {
+          "Key": "groupName:Color",
+          "Value": "Color"
+        },
+        {
+          "Key": "groupName:Numeric",
+          "Value": "Numeric"
+        },
+        {
+          "Key": "groupName:Vectors",
+          "Value": "Vectors"
+        },
+        {
+          "Key": "groupName:Enum",
+          "Value": "Enum"
+        },
+        {
+          "Key": "groupName:Segmented",
+          "Value": "Segmented"
+        },
+        {
+          "Key": "groupName:Toggle",
+          "Value": "Toggle"
+        },
+        {
+          "Key": "groupName:Decorators",
+          "Value": "Decorators"
+        },
+        {
+          "Key": "groupName:RenderState",
+          "Value": "Render State"
+        },
+        {
+          "Key": "group:Properties",
+          "Value": "Properties"
+        },
+        {
+          "Key": "group:Textures",
+          "Value": "Textures"
+        },
+        {
+          "Key": "group:Color",
+          "Value": "Color"
+        },
+        {
+          "Key": "group:Numeric",
+          "Value": "Numeric"
+        },
+        {
+          "Key": "group:Vectors",
+          "Value": "Vectors"
+        },
+        {
+          "Key": "group:Enum",
+          "Value": "Enum"
+        },
+        {
+          "Key": "group:Enum/Segmented",
+          "Value": "Enum / Segmented"
+        },
+        {
+          "Key": "group:Toggle",
+          "Value": "Toggle"
+        },
+        {
+          "Key": "group:Decorators",
+          "Value": "Decorators"
+        },
+        {
+          "Key": "group:RenderState",
+          "Value": "Render State"
+        },
+        {
+          "Key": "propName:_MainTex",
+          "Value": "Main Texture"
+        },
+        {
+          "Key": "propName:_SampleTexture",
+          "Value": "Texture (Offset)"
+        },
+        {
+          "Key": "propName:_SampleColor",
+          "Value": "Color"
+        },
+        {
+          "Key": "propName:_SampleColorHDR",
+          "Value": "Color (HDR)"
+        },
+        {
+          "Key": "propName:_SampleGradient",
+          "Value": "Gradient"
+        },
+        {
+          "Key": "propName:_SampleFloat",
+          "Value": "Float"
+        },
+        {
+          "Key": "propName:_ValidatedFloat",
+          "Value": "Validated Float (>= 0)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitM",
+          "Value": "Float (m)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitDeg",
+          "Value": "Float (deg)"
+        },
+        {
+          "Key": "propName:_SampleRange",
+          "Value": "Range"
+        },
+        {
+          "Key": "propName:_SampleFlexRange",
+          "Value": "Flex Range"
+        },
+        {
+          "Key": "propName:_SampleVec4",
+          "Value": "Vec4"
+        },
+        {
+          "Key": "propName:_SampleVec2",
+          "Value": "Vec2"
+        },
+        {
+          "Key": "propName:_SampleVec3",
+          "Value": "Vec3"
+        },
+        {
+          "Key": "propName:_SampleMinMax01",
+          "Value": "MinMax (0 to 1)"
+        },
+        {
+          "Key": "propName:_SampleMinMaxSigned",
+          "Value": "MinMax (-1 to 1)"
+        },
+        {
+          "Key": "propName:_SampleEnum",
+          "Value": "Enum"
+        },
+        {
+          "Key": "propName:_SampleKeywordEnum",
+          "Value": "Keyword Enum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedEnum",
+          "Value": "Segmented Enum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedKeyword",
+          "Value": "Segmented Keyword"
+        },
+        {
+          "Key": "propName:_SampleSegmentedOnOff",
+          "Value": "Segmented On/Off"
+        },
+        {
+          "Key": "propName:_SampleToggle",
+          "Value": "Toggle"
+        },
+        {
+          "Key": "propName:_SampleToggleOff",
+          "Value": "Toggle (Inverted)"
+        },
+        {
+          "Key": "propName:_SampleToggleColor",
+          "Value": "Toggle Color"
+        },
+        {
+          "Key": "propName:_SampleSpaceDefault",
+          "Value": "Space (Default)"
+        },
+        {
+          "Key": "propName:_SampleSpaceCustom",
+          "Value": "Space (32 px)"
+        },
+        {
+          "Key": "propName:_SampleDivider",
+          "Value": "Divider"
+        },
+        {
+          "Key": "propName:_SampleDemoNote",
+          "Value": "Custom Renderer"
+        },
+        {
+          "Key": "propName:_Cull",
+          "Value": "Cull Mode"
+        },
+        {
+          "Key": "propName:_CullBackOnlyDetail",
+          "Value": "Back Cull Detail"
+        },
+        {
+          "Key": "propName:_DoubleSidedEnable",
+          "Value": "Double Sided"
+        },
+        {
+          "Key": "propName:_Ungrouped",
+          "Value": "Ungrouped Float"
+        }
+      ]
+    },
+    {
+      "Code": "KR",
+      "Entries": [
+        {
+          "Key": "ui:Language",
+          "Value": "언어"
+        },
+        {
+          "Key": "ui:GPUInstancing",
+          "Value": "GPU 인스턴싱"
+        },
+        {
+          "Key": "ui:DoubleSided",
+          "Value": "양면 렌더링"
+        },
+        {
+          "Key": "ui:Expand",
+          "Value": "펼치기"
+        },
+        {
+          "Key": "ui:Collapse",
+          "Value": "접기"
+        },
+        {
+          "Key": "ui:Presets",
+          "Value": "프리셋"
+        },
+        {
+          "Key": "ui:RenderQueue",
+          "Value": "렌더 큐"
+        },
+        {
+          "Key": "ui:RQ_FromShader",
+          "Value": "셰이더 기본값"
+        },
+        {
+          "Key": "ui:RQ_Background",
+          "Value": "배경"
+        },
+        {
+          "Key": "ui:RQ_Geometry",
+          "Value": "지오메트리"
+        },
+        {
+          "Key": "ui:RQ_AlphaTest",
+          "Value": "알파 테스트"
+        },
+        {
+          "Key": "ui:RQ_Transparent",
+          "Value": "투명"
+        },
+        {
+          "Key": "ui:RQ_Overlay",
+          "Value": "오버레이"
+        },
+        {
+          "Key": "ui:Mixed",
+          "Value": "혼합"
+        },
+        {
+          "Key": "ui:OverwriteTitle",
+          "Value": "프리셋이 이미 있습니다"
+        },
+        {
+          "Key": "ui:OverwriteMsg",
+          "Value": "동일한 이름의 프리셋이 이미 존재합니다. 덮어쓰시겠습니까?"
+        },
+        {
+          "Key": "ui:Overwrite",
+          "Value": "덮어쓰기"
+        },
+        {
+          "Key": "ui:Cancel",
+          "Value": "취소"
+        },
+        {
+          "Key": "ui:NewPresetTitle",
+          "Value": "새 프리셋"
+        },
+        {
+          "Key": "ui:Name",
+          "Value": "이름"
+        },
+        {
+          "Key": "ui:Create",
+          "Value": "생성"
+        },
+        {
+          "Key": "ui:ShowAllGroups",
+          "Value": "전체 표시"
+        },
+        {
+          "Key": "ui:Filter",
+          "Value": "필터"
+        },
+        {
+          "Key": "ui:FilterAll",
+          "Value": "전체"
+        },
+        {
+          "Key": "ui:Changed",
+          "Value": "변경됨"
+        },
+        {
+          "Key": "ui:Warnings",
+          "Value": "경고"
+        },
+        {
+          "Key": "ui:Textures",
+          "Value": "텍스처"
+        },
+        {
+          "Key": "ui:Numbers",
+          "Value": "숫자"
+        },
+        {
+          "Key": "ui:Colors",
+          "Value": "색상"
+        },
+        {
+          "Key": "ui:NoPresets",
+          "Value": "프리셋 없음"
+        },
+        {
+          "Key": "ui:Apply",
+          "Value": "적용"
+        },
+        {
+          "Key": "ui:AddPresetFromCurrentAll",
+          "Value": "현재 값으로 프리셋 추가 (전체)"
+        },
+        {
+          "Key": "ui:CopyCurrentAsJsonAll",
+          "Value": "현재 값을 JSON으로 복사 (전체)"
+        },
+        {
+          "Key": "ui:Empty",
+          "Value": "비어 있음"
+        },
+        {
+          "Key": "groupName:Properties",
+          "Value": "속성"
+        },
+        {
+          "Key": "groupName:Textures",
+          "Value": "텍스처"
+        },
+        {
+          "Key": "groupName:Color",
+          "Value": "색상"
+        },
+        {
+          "Key": "groupName:Numeric",
+          "Value": "수치"
+        },
+        {
+          "Key": "groupName:Vectors",
+          "Value": "벡터"
+        },
+        {
+          "Key": "groupName:Enum",
+          "Value": "열거형"
+        },
+        {
+          "Key": "groupName:Segmented",
+          "Value": "세그먼트"
+        },
+        {
+          "Key": "groupName:Toggle",
+          "Value": "토글"
+        },
+        {
+          "Key": "groupName:Decorators",
+          "Value": "데코레이터"
+        },
+        {
+          "Key": "groupName:RenderState",
+          "Value": "렌더 상태"
+        },
+        {
+          "Key": "group:Properties",
+          "Value": "속성"
+        },
+        {
+          "Key": "group:Textures",
+          "Value": "텍스처"
+        },
+        {
+          "Key": "group:Color",
+          "Value": "색상"
+        },
+        {
+          "Key": "group:Numeric",
+          "Value": "수치"
+        },
+        {
+          "Key": "group:Vectors",
+          "Value": "벡터"
+        },
+        {
+          "Key": "group:Enum",
+          "Value": "열거형"
+        },
+        {
+          "Key": "group:Enum/Segmented",
+          "Value": "열거형 / 세그먼트"
+        },
+        {
+          "Key": "group:Toggle",
+          "Value": "토글"
+        },
+        {
+          "Key": "group:Decorators",
+          "Value": "데코레이터"
+        },
+        {
+          "Key": "group:RenderState",
+          "Value": "렌더 상태"
+        },
+        {
+          "Key": "propName:_MainTex",
+          "Value": "메인 텍스처"
+        },
+        {
+          "Key": "propName:_SampleTexture",
+          "Value": "텍스처 (오프셋)"
+        },
+        {
+          "Key": "propName:_SampleColor",
+          "Value": "색상"
+        },
+        {
+          "Key": "propName:_SampleColorHDR",
+          "Value": "색상 (HDR)"
+        },
+        {
+          "Key": "propName:_SampleGradient",
+          "Value": "그라데이션"
+        },
+        {
+          "Key": "propName:_SampleFloat",
+          "Value": "Float"
+        },
+        {
+          "Key": "propName:_ValidatedFloat",
+          "Value": "유효성 검사 Float (>= 0)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitM",
+          "Value": "Float (m)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitDeg",
+          "Value": "Float (deg)"
+        },
+        {
+          "Key": "propName:_SampleRange",
+          "Value": "Range"
+        },
+        {
+          "Key": "propName:_SampleFlexRange",
+          "Value": "Flex Range"
+        },
+        {
+          "Key": "propName:_SampleVec4",
+          "Value": "Vec4"
+        },
+        {
+          "Key": "propName:_SampleVec2",
+          "Value": "Vec2"
+        },
+        {
+          "Key": "propName:_SampleVec3",
+          "Value": "Vec3"
+        },
+        {
+          "Key": "propName:_SampleMinMax01",
+          "Value": "MinMax (0~1)"
+        },
+        {
+          "Key": "propName:_SampleMinMaxSigned",
+          "Value": "MinMax (-1~1)"
+        },
+        {
+          "Key": "propName:_SampleEnum",
+          "Value": "Enum"
+        },
+        {
+          "Key": "propName:_SampleKeywordEnum",
+          "Value": "Keyword Enum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedEnum",
+          "Value": "세그먼트 Enum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedKeyword",
+          "Value": "세그먼트 Keyword"
+        },
+        {
+          "Key": "propName:_SampleSegmentedOnOff",
+          "Value": "세그먼트 On/Off"
+        },
+        {
+          "Key": "propName:_SampleToggle",
+          "Value": "Toggle"
+        },
+        {
+          "Key": "propName:_SampleToggleOff",
+          "Value": "Toggle (반전)"
+        },
+        {
+          "Key": "propName:_SampleToggleColor",
+          "Value": "토글 색상"
+        },
+        {
+          "Key": "propName:_SampleSpaceDefault",
+          "Value": "Space (기본)"
+        },
+        {
+          "Key": "propName:_SampleSpaceCustom",
+          "Value": "Space (32 px)"
+        },
+        {
+          "Key": "propName:_SampleDivider",
+          "Value": "Divider"
+        },
+        {
+          "Key": "propName:_SampleDemoNote",
+          "Value": "커스텀 렌더러"
+        },
+        {
+          "Key": "propName:_Cull",
+          "Value": "컬링 모드"
+        },
+        {
+          "Key": "propName:_CullBackOnlyDetail",
+          "Value": "Back 컬링 상세"
+        },
+        {
+          "Key": "propName:_DoubleSidedEnable",
+          "Value": "양면 렌더링"
+        },
+        {
+          "Key": "propName:_Ungrouped",
+          "Value": "그룹 없는 Float"
+        }
+      ]
+    },
+    {
+      "Code": "JP",
+      "Entries": [
+        {
+          "Key": "ui:Language",
+          "Value": "言語"
+        },
+        {
+          "Key": "ui:GPUInstancing",
+          "Value": "GPUインスタンシング"
+        },
+        {
+          "Key": "ui:DoubleSided",
+          "Value": "両面"
+        },
+        {
+          "Key": "ui:Expand",
+          "Value": "展開"
+        },
+        {
+          "Key": "ui:Collapse",
+          "Value": "折りたたみ"
+        },
+        {
+          "Key": "ui:Presets",
+          "Value": "プリセット"
+        },
+        {
+          "Key": "ui:RenderQueue",
+          "Value": "レンダーキュー"
+        },
+        {
+          "Key": "ui:RQ_FromShader",
+          "Value": "シェーダー既定"
+        },
+        {
+          "Key": "ui:RQ_Background",
+          "Value": "バックグラウンド"
+        },
+        {
+          "Key": "ui:RQ_Geometry",
+          "Value": "ジオメトリ"
+        },
+        {
+          "Key": "ui:RQ_AlphaTest",
+          "Value": "アルファテスト"
+        },
+        {
+          "Key": "ui:RQ_Transparent",
+          "Value": "透明"
+        },
+        {
+          "Key": "ui:RQ_Overlay",
+          "Value": "オーバーレイ"
+        },
+        {
+          "Key": "ui:Mixed",
+          "Value": "混在"
+        },
+        {
+          "Key": "ui:OverwriteTitle",
+          "Value": "既存のプリセット"
+        },
+        {
+          "Key": "ui:OverwriteMsg",
+          "Value": "同名のプリセットが既に存在します。上書きしますか？"
+        },
+        {
+          "Key": "ui:Overwrite",
+          "Value": "上書き"
+        },
+        {
+          "Key": "ui:Cancel",
+          "Value": "キャンセル"
+        },
+        {
+          "Key": "ui:NewPresetTitle",
+          "Value": "新規プリセット"
+        },
+        {
+          "Key": "ui:Name",
+          "Value": "名前"
+        },
+        {
+          "Key": "ui:Create",
+          "Value": "作成"
+        },
+        {
+          "Key": "ui:ShowAllGroups",
+          "Value": "すべて表示"
+        },
+        {
+          "Key": "ui:Filter",
+          "Value": "フィルター"
+        },
+        {
+          "Key": "ui:FilterAll",
+          "Value": "すべて"
+        },
+        {
+          "Key": "ui:Changed",
+          "Value": "変更済み"
+        },
+        {
+          "Key": "ui:Warnings",
+          "Value": "警告"
+        },
+        {
+          "Key": "ui:Textures",
+          "Value": "テクスチャ"
+        },
+        {
+          "Key": "ui:Numbers",
+          "Value": "数値"
+        },
+        {
+          "Key": "ui:Colors",
+          "Value": "カラー"
+        },
+        {
+          "Key": "ui:NoPresets",
+          "Value": "プリセットなし"
+        },
+        {
+          "Key": "ui:Apply",
+          "Value": "適用"
+        },
+        {
+          "Key": "ui:AddPresetFromCurrentAll",
+          "Value": "現在の値からプリセットを追加 (すべて)"
+        },
+        {
+          "Key": "ui:CopyCurrentAsJsonAll",
+          "Value": "現在の値をJSONとしてコピー (すべて)"
+        },
+        {
+          "Key": "ui:Empty",
+          "Value": "空"
+        },
+        {
+          "Key": "groupName:Properties",
+          "Value": "プロパティ"
+        },
+        {
+          "Key": "groupName:Textures",
+          "Value": "テクスチャ"
+        },
+        {
+          "Key": "groupName:Color",
+          "Value": "カラー"
+        },
+        {
+          "Key": "groupName:Numeric",
+          "Value": "数値"
+        },
+        {
+          "Key": "groupName:Vectors",
+          "Value": "ベクター"
+        },
+        {
+          "Key": "groupName:Enum",
+          "Value": "列挙型"
+        },
+        {
+          "Key": "groupName:Segmented",
+          "Value": "セグメント"
+        },
+        {
+          "Key": "groupName:Toggle",
+          "Value": "トグル"
+        },
+        {
+          "Key": "groupName:Decorators",
+          "Value": "デコレーター"
+        },
+        {
+          "Key": "groupName:RenderState",
+          "Value": "レンダーステート"
+        },
+        {
+          "Key": "group:Properties",
+          "Value": "プロパティ"
+        },
+        {
+          "Key": "group:Textures",
+          "Value": "テクスチャ"
+        },
+        {
+          "Key": "group:Color",
+          "Value": "カラー"
+        },
+        {
+          "Key": "group:Numeric",
+          "Value": "数値"
+        },
+        {
+          "Key": "group:Vectors",
+          "Value": "ベクター"
+        },
+        {
+          "Key": "group:Enum",
+          "Value": "列挙型"
+        },
+        {
+          "Key": "group:Enum/Segmented",
+          "Value": "列挙型 / セグメント"
+        },
+        {
+          "Key": "group:Toggle",
+          "Value": "トグル"
+        },
+        {
+          "Key": "group:Decorators",
+          "Value": "デコレーター"
+        },
+        {
+          "Key": "group:RenderState",
+          "Value": "レンダーステート"
+        },
+        {
+          "Key": "propName:_MainTex",
+          "Value": "メインテクスチャ"
+        },
+        {
+          "Key": "propName:_SampleTexture",
+          "Value": "テクスチャ (オフセット)"
+        },
+        {
+          "Key": "propName:_SampleColor",
+          "Value": "カラー"
+        },
+        {
+          "Key": "propName:_SampleColorHDR",
+          "Value": "カラー (HDR)"
+        },
+        {
+          "Key": "propName:_SampleGradient",
+          "Value": "グラデーション"
+        },
+        {
+          "Key": "propName:_SampleFloat",
+          "Value": "Float"
+        },
+        {
+          "Key": "propName:_ValidatedFloat",
+          "Value": "バリデーションFloat (>= 0)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitM",
+          "Value": "Float (m)"
+        },
+        {
+          "Key": "propName:_SampleFloatUnitDeg",
+          "Value": "Float (deg)"
+        },
+        {
+          "Key": "propName:_SampleRange",
+          "Value": "Range"
+        },
+        {
+          "Key": "propName:_SampleFlexRange",
+          "Value": "Flex Range"
+        },
+        {
+          "Key": "propName:_SampleVec4",
+          "Value": "Vec4"
+        },
+        {
+          "Key": "propName:_SampleVec2",
+          "Value": "Vec2"
+        },
+        {
+          "Key": "propName:_SampleVec3",
+          "Value": "Vec3"
+        },
+        {
+          "Key": "propName:_SampleMinMax01",
+          "Value": "MinMax (0〜1)"
+        },
+        {
+          "Key": "propName:_SampleMinMaxSigned",
+          "Value": "MinMax (-1〜1)"
+        },
+        {
+          "Key": "propName:_SampleEnum",
+          "Value": "Enum"
+        },
+        {
+          "Key": "propName:_SampleKeywordEnum",
+          "Value": "Keyword Enum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedEnum",
+          "Value": "セグメントEnum"
+        },
+        {
+          "Key": "propName:_SampleSegmentedKeyword",
+          "Value": "セグメントKeyword"
+        },
+        {
+          "Key": "propName:_SampleSegmentedOnOff",
+          "Value": "セグメントOn/Off"
+        },
+        {
+          "Key": "propName:_SampleToggle",
+          "Value": "トグル"
+        },
+        {
+          "Key": "propName:_SampleToggleOff",
+          "Value": "トグル (反転)"
+        },
+        {
+          "Key": "propName:_SampleToggleColor",
+          "Value": "トグルカラー"
+        },
+        {
+          "Key": "propName:_SampleSpaceDefault",
+          "Value": "Space (既定)"
+        },
+        {
+          "Key": "propName:_SampleSpaceCustom",
+          "Value": "Space (32 px)"
+        },
+        {
+          "Key": "propName:_SampleDivider",
+          "Value": "区切り線"
+        },
+        {
+          "Key": "propName:_SampleDemoNote",
+          "Value": "カスタムレンダラー"
+        },
+        {
+          "Key": "propName:_Cull",
+          "Value": "カリングモード"
+        },
+        {
+          "Key": "propName:_CullBackOnlyDetail",
+          "Value": "Backカリング詳細"
+        },
+        {
+          "Key": "propName:_DoubleSidedEnable",
+          "Value": "両面レンダリング有効"
+        },
+        {
+          "Key": "propName:_Ungrouped",
+          "Value": "グループなしFloat"
+        }
+      ]
+    }
+  ]
+}
