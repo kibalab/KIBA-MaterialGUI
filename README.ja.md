@@ -77,7 +77,7 @@ https://kibalab.github.io/KIBA-MaterialGUI/
 
 `release.yml` は `PACKAGE_NAME` が未設定の場合でも `com.kibalab.kibamaterialgui` を既定値として使用します。
 
-`deploy-docs.yml` は `release` ブランチ、または `release` ブランチに含まれるリリースタグが push されたときに Docusaurus ドキュメントを GitHub Pages へデプロイします。
+`deploy-docs.yml` は `release` ブランチに含まれるリリースタグが push されたときに Docusaurus ドキュメントを GitHub Pages へデプロイします。
 
 ## リリース
 

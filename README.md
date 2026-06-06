@@ -77,7 +77,7 @@ https://kibalab.github.io/KIBA-MaterialGUI/
 
 `release.yml`은 `PACKAGE_NAME`이 없을 때도 `com.kibalab.kibamaterialgui`를 기본값으로 사용합니다.
 
-`deploy-docs.yml`은 `release` 브랜치 또는 `release` 브랜치에 포함된 릴리스 태그가 푸시될 때 Docusaurus 문서를 GitHub Pages로 배포합니다.
+`deploy-docs.yml`은 `release` 브랜치에 포함된 릴리스 태그가 푸시될 때 Docusaurus 문서를 GitHub Pages로 배포합니다.
 
 ## 릴리스
 

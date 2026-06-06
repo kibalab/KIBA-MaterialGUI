@@ -77,7 +77,7 @@ This repository uses the KIBALAB VPM package template release workflow.
 
 `release.yml` falls back to `com.kibalab.kibamaterialgui` when `PACKAGE_NAME` is not configured.
 
-`deploy-docs.yml` deploys the Docusaurus documentation to GitHub Pages when the `release` branch or a release tag contained in the `release` branch is pushed.
+`deploy-docs.yml` deploys the Docusaurus documentation to GitHub Pages when a release tag contained in the `release` branch is pushed.
 
 ## Releasing
 

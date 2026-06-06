@@ -3,8 +3,6 @@ name: Deploy website
 on:
   workflow_dispatch:
   push:
-    branches:
-      - release
     tags:
       - '*'
 
@@ -44,12 +42,10 @@ jobs:
             exit 0
           fi
 
-          if [ "${GITHUB_REF}" = "refs/heads/release" ]; then
-            echo "allowed=true" >> "$GITHUB_OUTPUT"
-          elif [[ "${GITHUB_REF}" == refs/tags/* ]] && git merge-base --is-ancestor "${GITHUB_SHA}" "origin/release"; then
+          if [[ "${GITHUB_REF}" == refs/tags/* ]] && git merge-base --is-ancestor "${GITHUB_SHA}" "origin/release"; then
             echo "allowed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Docs deployment only runs for the release branch or tags contained in origin/release."
+            echo "Docs deployment only runs for tags contained in origin/release."
             echo "allowed=false" >> "$GITHUB_OUTPUT"
           fi
 
