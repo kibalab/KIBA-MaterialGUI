@@ -77,13 +77,17 @@ https://kibalab.github.io/KIBA-MaterialGUI/
 
 `release.yml`은 `PACKAGE_NAME`이 없을 때도 `com.kibalab.kibamaterialgui`를 기본값으로 사용합니다.
 
-`docs.yml`은 `main` 또는 릴리스 태그가 푸시될 때 Docusaurus 문서를 GitHub Pages로 배포합니다.
+`deploy-docs.yml`은 `release` 브랜치 또는 `release` 브랜치에 포함된 릴리스 태그가 푸시될 때 Docusaurus 문서를 GitHub Pages로 배포합니다.
 
 ## 릴리스
 
-`package.json`의 `version`과 Git 태그가 일치해야 합니다.
+`main`은 개발 브랜치입니다. 릴리스할 때는 `release` 브랜치를 `main`으로 fast-forward 또는 merge한 뒤, `release` 브랜치의 커밋에 `package.json`의 `version`과 같은 Git 태그를 붙여 푸시합니다.
 
 ```bash
+git switch release
+git pull origin release
+git merge --ff-only origin/main
+git push origin release
 git tag 0.1.0
 git push origin 0.1.0
 ```

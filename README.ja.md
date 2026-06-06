@@ -77,13 +77,17 @@ https://kibalab.github.io/KIBA-MaterialGUI/
 
 `release.yml` は `PACKAGE_NAME` が未設定の場合でも `com.kibalab.kibamaterialgui` を既定値として使用します。
 
-`docs.yml` は `main` またはリリースタグが push されたときに Docusaurus ドキュメントを GitHub Pages へデプロイします。
+`deploy-docs.yml` は `release` ブランチ、または `release` ブランチに含まれるリリースタグが push されたときに Docusaurus ドキュメントを GitHub Pages へデプロイします。
 
 ## リリース
 
-Git タグは `package.json` の `version` と一致している必要があります。
+`main` は開発ブランチです。リリース時は `main` を `release` へ fast-forward または merge し、`release` ブランチ上のコミットに `package.json` の `version` と同じ Git タグを付けて push します。
 
 ```bash
+git switch release
+git pull origin release
+git merge --ff-only origin/main
+git push origin release
 git tag 0.1.0
 git push origin 0.1.0
 ```

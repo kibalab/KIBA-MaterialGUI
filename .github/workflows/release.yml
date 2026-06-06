@@ -1,7 +1,6 @@
 name: Build Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - '*'
@@ -25,16 +24,6 @@ jobs:
         shell: bash
         run: |
           git fetch origin +refs/heads/release:refs/remotes/origin/release
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            if [ "${{ github.ref_name }}" = "release" ]; then
-              echo "allowed=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "Release workflow_dispatch must run from the release branch."
-              echo "allowed=false" >> "$GITHUB_OUTPUT"
-            fi
-            exit 0
-          fi
 
           if [[ "${GITHUB_REF}" == refs/tags/* ]] && git merge-base --is-ancestor "${GITHUB_SHA}" "origin/release"; then
             echo "allowed=true" >> "$GITHUB_OUTPUT"

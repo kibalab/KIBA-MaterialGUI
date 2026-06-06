@@ -77,13 +77,17 @@ This repository uses the KIBALAB VPM package template release workflow.
 
 `release.yml` falls back to `com.kibalab.kibamaterialgui` when `PACKAGE_NAME` is not configured.
 
-`docs.yml` deploys the Docusaurus documentation to GitHub Pages when `main` or a release tag is pushed.
+`deploy-docs.yml` deploys the Docusaurus documentation to GitHub Pages when the `release` branch or a release tag contained in the `release` branch is pushed.
 
 ## Releasing
 
-The Git tag must match `package.json`'s `version`.
+`main` is the development branch. To release, fast-forward or merge `main` into `release`, then tag the `release` branch commit with the same version as `package.json`.
 
 ```bash
+git switch release
+git pull origin release
+git merge --ff-only origin/main
+git push origin release
 git tag 0.1.0
 git push origin 0.1.0
 ```
