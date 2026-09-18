@@ -71,6 +71,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
         private static readonly Dictionary<string, Dictionary<string, int>> s_VectorFieldCountCache = new(StringComparer.Ordinal);
 
         private static bool s_ProjectChangedHooked;
+        private static readonly Dictionary<Shader, string> s_ShaderKeys = new();
+        internal static int Version { get; private set; }
 
         private static readonly Dictionary<string, EnumInfo> s_KnownEnums = new(StringComparer.Ordinal)
         {
@@ -194,6 +196,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
         {
             key = string.Empty;
             if (shader == null) return false;
+            if (s_ShaderKeys.TryGetValue(shader, out key)) return true;
 
             var path = AssetDatabase.GetAssetPath(shader);
             if (string.IsNullOrEmpty(path)) return false;
@@ -202,7 +205,10 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             if (string.IsNullOrEmpty(key)) key = path;
 
             if (s_AttributeCache.ContainsKey(key))
+            {
+                s_ShaderKeys[shader] = key;
                 return true;
+            }
 
             var enumMap = new Dictionary<string, EnumInfo>(StringComparer.Ordinal);
             var toggleMap = new Dictionary<string, ToggleInfo>(StringComparer.Ordinal);
@@ -230,6 +236,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             s_TopSpacePxCache[key] = topSpacePxMap;
             s_AttributeCache[key] = compactAttributeMap;
             s_VectorFieldCountCache[key] = vectorFieldCountMap;
+            s_ShaderKeys[shader] = key;
 
             HookProjectChangedOnce();
             return true;
@@ -436,6 +443,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
         public static void InvalidateAll()
         {
+            Version++;
+            s_ShaderKeys.Clear();
             s_EnumCache.Clear();
             s_ToggleCache.Clear();
             s_KeywordEnumCache.Clear();

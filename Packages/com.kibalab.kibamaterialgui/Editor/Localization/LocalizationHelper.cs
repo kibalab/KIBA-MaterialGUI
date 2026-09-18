@@ -11,7 +11,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Localization
             if (ctx.LocalizationStore == null) return groupRaw;
 
             var full = ShaderLocalizationUtil.SanitizeKey($"group:{pathKey}");
-            var byFull = ctx.LocalizationStore.Get(ctx.CurrentLanguage, full, pathKey);
+            var byFull = ctx.LocalizationStore.Get(ctx.CurrentLanguage, full, string.Empty);
             if (!string.IsNullOrEmpty(byFull)) return byFull;
 
             var nameKey = ShaderLocalizationUtil.SanitizeKey($"groupName:{groupRaw}");
@@ -24,7 +24,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Localization
             if (ctx.LocalizationStore == null) return labelRaw;
 
             var nameKey = ShaderLocalizationUtil.SanitizeKey($"propName:{propName}");
-            var byName = ctx.LocalizationStore.Get(ctx.CurrentLanguage, nameKey, propName);
+            var byName = ctx.LocalizationStore.Get(ctx.CurrentLanguage, nameKey, string.Empty);
             if (!string.IsNullOrEmpty(byName)) return byName;
 
             var labelKey = ShaderLocalizationUtil.SanitizeKey($"prop:{labelRaw}");

@@ -24,6 +24,7 @@ Direct writes can bypass Unity undo and animation recording paths.
 `PropertyRendererArgs` provides:
 
 - `SetFloatValue(float value, string undoName = null)`
+- `SetIntValue(int value, string undoName = null)` for ShaderLab `Integer` properties
 - `SetColorValue(Color value, string undoName = null)`
 - `SetVectorValue(Vector4 value, string undoName = null)`
 - `SetTextureValue(Texture value, string undoName = null)`

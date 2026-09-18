@@ -2,7 +2,7 @@
 
 KIBAMaterialGUI is an attribute-driven Unity `ShaderGUI` for material inspectors. Shader authors describe layout and editor behavior with ShaderLab attributes, and KIBAMaterialGUI builds a grouped, searchable, resettable inspector from those hints.
 
-This package starts public distribution at version `0.1.0`.
+Requires Unity **2022.3 or newer**. This is an editor-only package with no VRChat SDK dependency.
 
 ## Install
 
@@ -84,7 +84,7 @@ public sealed class MyHintRenderer : IMaterialGUIPropertyRenderer
 }
 ```
 
-Use `PropertyRendererArgs.SetFloatValue`, `SetColorValue`, `SetVectorValue`, `SetTextureValue`, `SetTextureScaleAndOffset`, or `RegisterPropertyValueChange` before manual writes. These helpers keep undo and Unity animation recording behavior consistent.
+Use `PropertyRendererArgs.SetFloatValue`, `SetIntValue`, `SetColorValue`, `SetVectorValue`, `SetTextureValue`, `SetTextureScaleAndOffset`, or `RegisterPropertyValueChange` before manual writes. Call setters inside a change check so repainting does not overwrite mixed selections. These helpers keep undo and Unity animation recording behavior consistent.
 
 Editor-level extensions can also use:
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KIBA_.KIBAMaterialGUI.Editor.Extensibility;
 using UnityEditor;
+using UnityEngine;
 
 namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 {
@@ -106,7 +107,15 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
                 if (!MatchPropertyName(entry, args)) continue;
                 if (!MatchPropertyType(entry, args)) continue;
                 if (!MatchShaderAttributes(entry, args)) continue;
-                if (impl is IMaterialGUIPropertyRendererFilter filter && !filter.CanRender(args)) continue;
+                if (impl is IMaterialGUIPropertyRendererFilter filter)
+                {
+                    try { if (!filter.CanRender(args)) continue; }
+                    catch (Exception ex) when (ex is not ExitGUIException)
+                    {
+                        MaterialGUIRegistryDiagnostics.ReportCallbackFailure(impl, "CanRender", ex);
+                        continue;
+                    }
+                }
 
                 renderer = impl;
                 return true;

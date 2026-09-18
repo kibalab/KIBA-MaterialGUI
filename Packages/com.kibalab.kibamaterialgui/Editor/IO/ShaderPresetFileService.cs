@@ -39,7 +39,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.IO
 
             try
             {
-                return JsonUtility.FromJson<ShaderPresetStore>(asset.text) ?? new ShaderPresetStore();
+                return ShaderPresetSerialization.ReadStore(asset.text);
             }
             catch
             {

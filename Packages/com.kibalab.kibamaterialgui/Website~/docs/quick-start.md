@@ -2,6 +2,8 @@
 
 This guide shows the shortest path from a normal Unity shader to a KIBAMaterialGUI material inspector.
 
+Requires **Unity 2022.3 or newer**. No VRChat SDK is required.
+
 ## 1. Add The Package
 
 Add the package to your Unity project. During local development, a file dependency can point at the package folder:

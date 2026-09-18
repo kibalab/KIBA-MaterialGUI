@@ -114,7 +114,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
                 if (!MatchGroup(e.GroupPath, args.GroupPath)) continue;
                 if (!MatchProperty(e.PropertyName, args.Property)) continue;
 
-                e.Impl.OnGUI(args);
+                try { e.Impl.OnGUI(args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(e.Impl, "OnGUI", ex); }
             }
         }
 

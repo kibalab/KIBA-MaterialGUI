@@ -15,8 +15,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
         {
             if (property == null) return;
 
-            context?.MaterialEditor?.RegisterPropertyChangeUndo(undoName);
-            GUI.changed = true;
+            PropertyRowHost.RegisterPropertyValueChange(context?.MaterialEditor, property, undoName);
         }
 
         public static void SetFloat(
@@ -25,7 +24,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             float value,
             string undoName = "Change Material Float")
         {
-            if (property == null || Mathf.Approximately(property.floatValue, value)) return;
+            if (property == null || (!property.hasMixedValue && Mathf.Approximately(property.floatValue, value))) return;
             RegisterChange(context, property, undoName);
             property.floatValue = value;
         }
@@ -36,9 +35,20 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             Color value,
             string undoName = "Change Material Color")
         {
-            if (property == null || property.colorValue == value) return;
+            if (property == null || (!property.hasMixedValue && property.colorValue == value)) return;
             RegisterChange(context, property, undoName);
             property.colorValue = value;
+        }
+
+        public static void SetInt(
+            MaterialGUIContext? context,
+            MaterialProperty property,
+            int value,
+            string undoName = "Change Material Integer")
+        {
+            if (property == null || (!property.hasMixedValue && property.intValue == value)) return;
+            RegisterChange(context, property, undoName);
+            property.intValue = value;
         }
 
         public static void SetVector(
@@ -47,7 +57,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             Vector4 value,
             string undoName = "Change Material Vector")
         {
-            if (property == null || property.vectorValue == value) return;
+            if (property == null || (!property.hasMixedValue && property.vectorValue == value)) return;
             RegisterChange(context, property, undoName);
             property.vectorValue = value;
         }
@@ -58,7 +68,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             Texture? value,
             string undoName = "Change Material Texture")
         {
-            if (property == null || property.textureValue == value) return;
+            if (property == null || (!property.hasMixedValue && property.textureValue == value)) return;
             RegisterChange(context, property, undoName);
             property.textureValue = value;
         }
@@ -69,7 +79,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             Vector4 value,
             string undoName = "Change Material Texture Scale And Offset")
         {
-            if (property == null || property.textureScaleAndOffset == value) return;
+            if (property == null || (!property.hasMixedValue && property.textureScaleAndOffset == value)) return;
             RegisterChange(context, property, undoName);
             property.textureScaleAndOffset = value;
         }

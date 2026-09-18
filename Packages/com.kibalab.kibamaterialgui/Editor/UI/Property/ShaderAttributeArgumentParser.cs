@@ -59,12 +59,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
                 if (c != ',' || depth != 0) continue;
 
-                list.Add(args.Substring(start, i - start).Trim());
+                list.Add(TrimQuotes(args.Substring(start, i - start)));
                 start = i + 1;
             }
 
             if (start <= args.Length)
-                list.Add(args.Substring(start).Trim());
+                list.Add(TrimQuotes(args.Substring(start)));
 
             return list.Count == 0 ? Array.Empty<string>() : list.ToArray();
         }

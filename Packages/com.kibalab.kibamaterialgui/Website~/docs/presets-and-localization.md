@@ -60,6 +60,10 @@ Presets apply stored values to matching shaders. The easiest way to create a val
 
 Preset groups match shader names by regular expression. Keep expressions specific enough that presets do not appear on unrelated shaders.
 
+New presets store explicit `None` texture assignments, tiling/offset, and asset GUID plus local file ID for texture subassets. Integer properties are supported. Temporary, unsaved textures can be copied within the current editor session, but must be saved as assets before sharing a preset file.
+
+Saved JSON uses readable fields such as `Name`, `Values`, and `TextureGuid`, with `FormatVersion: 2` on each preset. Existing files with compiler-generated backing-field names are still read; the next save writes the new format. Older presets do not contain UV transforms or explicit `None` assignments, so those omitted values remain unchanged when applied.
+
 ## Practical Advice
 
 - Keep localization and preset files in source control with the shader.

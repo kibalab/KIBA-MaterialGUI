@@ -102,6 +102,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             return true;
         }
 
+        internal static bool HasValidators(Shader shader, string propertyName) =>
+            shader != null && GetValidators(shader, propertyName).Length > 0;
+
         private static ResolvedValidator[] GetValidators(Shader shader, string propertyName)
         {
             EnsureProjectHook();

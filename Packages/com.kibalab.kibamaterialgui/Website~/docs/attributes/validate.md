@@ -31,7 +31,8 @@ Return `false` to reject the edited value. A `void` validator is treated as succ
 
 - Validators are resolved by fully qualified type and method name.
 - Validation runs after a property edit.
-- When validation fails, KIBAMaterialGUI restores the previous value.
+- Validators run after an edited value changes, not on ordinary layout or repaint events.
+- When validation fails, KIBAMaterialGUI restores each selected material's original property value and keywords, including mixed selections.
 - Malformed validator references are reported through diagnostics when possible.
 
 ## Example

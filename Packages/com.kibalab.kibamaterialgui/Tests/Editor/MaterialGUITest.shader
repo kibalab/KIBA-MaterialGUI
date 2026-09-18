@@ -12,7 +12,16 @@ Shader "KIBA_/MaterialGUITests/Conditional"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        Pass {}
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex Vert
+            #pragma fragment Frag
+            #pragma shader_feature_local _ REVIEW_FIRST REVIEW_SECOND
+            float4 Vert(float4 vertex : POSITION) : SV_POSITION { return vertex; }
+            fixed4 Frag() : SV_Target { return fixed4(1, 1, 1, 1); }
+            ENDCG
+        }
     }
 
     CustomEditor "KIBA_.KIBAMaterialGUI.Editor.MaterialGUI"

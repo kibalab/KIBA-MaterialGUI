@@ -50,6 +50,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor.ShaderLab
         public GroupDrawer(string groupPath)
         {
         }
+        public GroupDrawer(string a, string b) { }
+        public GroupDrawer(string a, string b, string c) { }
+        public GroupDrawer(string a, string b, string c, string d) { }
+        public GroupDrawer(string a, string b, string c, string d, string e) { }
+        public GroupDrawer(string a, string b, string c, string d, string e, string f) { }
+        public GroupDrawer(string a, string b, string c, string d, string e, string f, string g) { }
     }
 
     public sealed class GradientTextureDrawer : ShaderPropertyDrawer
@@ -104,6 +110,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.ShaderLab
         public MinMaxSliderDrawer() { }
         public MinMaxSliderDrawer(float min, float max) { }
         public MinMaxSliderDrawer(string args) { }
+        public MinMaxSliderDrawer(string min, float max) { }
+        public MinMaxSliderDrawer(float min, string max) { }
+        public MinMaxSliderDrawer(string min, string max) { }
     }
 
     public sealed class VectorDrawer : ShaderPropertyDrawer

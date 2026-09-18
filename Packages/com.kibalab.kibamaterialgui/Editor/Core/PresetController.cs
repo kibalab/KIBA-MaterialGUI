@@ -16,64 +16,45 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
         private static PresetEntry? _clipboard;
 
         private string? _cachedPresetsShaderName;
+        private ShaderPresetStore? _cachedStore;
+        private List<PresetEntry>? _cachedPresets;
 
         public void BuildMatchedPresets(EditorContext ctx)
         {
             var shaderName = ctx.Material.shader != null ? ctx.Material.shader.name : string.Empty;
-            if (shaderName == _cachedPresetsShaderName) return;
-            _cachedPresetsShaderName = shaderName;
-            ctx.MatchedPresets = ShaderPresetFileService.GetMatchedPresets(ctx.PresetStore, shaderName);
+            if (shaderName != _cachedPresetsShaderName || !ReferenceEquals(_cachedStore, ctx.PresetStore) || _cachedPresets == null)
+            {
+                _cachedPresetsShaderName = shaderName;
+                _cachedStore = ctx.PresetStore;
+                _cachedPresets = ShaderPresetFileService.GetMatchedPresets(ctx.PresetStore, shaderName);
+            }
+            ctx.MatchedPresets = _cachedPresets;
         }
 
         public void ApplyPreset(EditorContext ctx, PresetEntry preset)
         {
-            if (preset == null || preset.Values == null) return;
-            var dict = new Dictionary<string, MaterialProperty>();
-            foreach (var p in ctx.Properties) dict[p.name] = p;
-            ctx.MaterialEditor.RegisterPropertyChangeUndo("Apply Preset " + preset.Name);
-            foreach (var v in preset.Values.Where(v => !string.IsNullOrEmpty(v.Property)))
-            {
-                if (!dict.TryGetValue(v.Property, out var mp)) continue;
-                switch (mp.type)
-                {
-                    case MaterialProperty.PropType.Float:
-                    case MaterialProperty.PropType.Range:
-                        mp.floatValue = v.Float; break;
-                    case MaterialProperty.PropType.Color:
-                        if (v.Color is { Length: >= 3 })
-                        {
-                            var a = v.Color.Length >= 4 ? v.Color[3] : 1f;
-                            mp.colorValue = new Color(v.Color[0], v.Color[1], v.Color[2], a);
-                        }
-
-                        break;
-                    case MaterialProperty.PropType.Vector:
-                        if (v.Vector4 is { Length: >= 4 }) mp.vectorValue = new Vector4(v.Vector4[0], v.Vector4[1], v.Vector4[2], v.Vector4[3]);
-                        break;
-                    case MaterialProperty.PropType.Texture:
-                        if (!string.IsNullOrEmpty(v.TextureGuid))
-                        {
-                            var path = AssetDatabase.GUIDToAssetPath(v.TextureGuid);
-                            var tex = AssetDatabase.LoadAssetAtPath<Texture>(path);
-                            if (tex != null) mp.textureValue = tex;
-                        }
-
-                        break;
-                }
-            }
+            if (preset == null) return;
+            ApplyValues(ctx, preset, ctx.Properties, "Apply Preset " + preset.Name);
         }
 
         public void ApplyPresetToProps(EditorContext ctx, PresetEntry preset, List<MaterialProperty> targetProps)
         {
+            ApplyValues(ctx, preset, targetProps, "Apply Group Paste");
+        }
+
+        private static void ApplyValues(EditorContext ctx, PresetEntry preset, IReadOnlyList<MaterialProperty> targetProps, string undoName)
+        {
             if (preset == null || preset.Values == null) return;
             var dict = new Dictionary<string, MaterialProperty>();
             foreach (var p in targetProps) dict[p.name] = p;
-            ctx.MaterialEditor.RegisterPropertyChangeUndo("Apply Group Paste");
+            ctx.MaterialEditor?.RegisterPropertyChangeUndo(undoName);
             foreach (var v in preset.Values.Where(v => !string.IsNullOrEmpty(v.Property)))
             {
                 if (!dict.TryGetValue(v.Property, out var mp)) continue;
                 switch (mp.type)
                 {
+                    case MaterialProperty.PropType.Int:
+                        mp.intValue = v.Integer; break;
                     case MaterialProperty.PropType.Float:
                     case MaterialProperty.PropType.Range:
                         mp.floatValue = v.Float; break;
@@ -89,16 +70,31 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
                         if (v.Vector4 is { Length: >= 4 }) mp.vectorValue = new Vector4(v.Vector4[0], v.Vector4[1], v.Vector4[2], v.Vector4[3]);
                         break;
                     case MaterialProperty.PropType.Texture:
-                        if (!string.IsNullOrEmpty(v.TextureGuid))
+                        if (v.HasTextureValue && v.TextureIsNull)
+                            mp.textureValue = null;
+                        else if (v.SessionTexture != null)
+                            mp.textureValue = v.SessionTexture;
+                        else if (!string.IsNullOrEmpty(v.TextureGuid))
                         {
                             var path = AssetDatabase.GUIDToAssetPath(v.TextureGuid);
-                            var tex = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                            Texture? tex = null;
+                            if (v.TextureLocalId == 0) tex = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                            else foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+                            {
+                                if (asset is Texture candidate && AssetDatabase.TryGetGUIDAndLocalFileIdentifier(candidate, out string _, out long id) && id == v.TextureLocalId)
+                                { tex = candidate; break; }
+                            }
                             if (tex != null) mp.textureValue = tex;
                         }
+                        if (v.TextureScaleOffset is { Length: >= 4 })
+                            mp.textureScaleAndOffset = new Vector4(v.TextureScaleOffset[0], v.TextureScaleOffset[1], v.TextureScaleOffset[2], v.TextureScaleOffset[3]);
 
                         break;
                 }
             }
+            GUI.changed = true;
+            ctx.MaterialEditor?.PropertiesChanged();
+            ctx.MaterialEditor?.Repaint();
         }
 
         public PresetEntry CapturePreset(EditorContext ctx, string name, List<MaterialProperty> props)
@@ -109,6 +105,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
                 var v = new PresetValue { Property = p.name };
                 switch (p.type)
                 {
+                    case MaterialProperty.PropType.Int:
+                        v.Integer = p.intValue; break;
                     case MaterialProperty.PropType.Float:
                     case MaterialProperty.PropType.Range:
                         v.Float = p.floatValue; break;
@@ -122,10 +120,18 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
                         break;
                     case MaterialProperty.PropType.Texture:
                         var tex = p.textureValue;
+                        v.HasTextureValue = true;
+                        v.TextureIsNull = tex == null;
+                        v.SessionTexture = tex;
+                        var st = p.textureScaleAndOffset;
+                        v.TextureScaleOffset = new[] { st.x, st.y, st.z, st.w };
                         if (tex != null)
                         {
-                            var path = AssetDatabase.GetAssetPath(tex);
-                            v.TextureGuid = AssetDatabase.AssetPathToGUID(path);
+                            if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(tex, out string guid, out long localId))
+                            {
+                                v.TextureGuid = guid;
+                                v.TextureLocalId = localId;
+                            }
                         }
 
                         break;
@@ -190,6 +196,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             if (ctx.Material.shader == null) return;
 
             ShaderPresetFileService.UpsertPresetEntry(ctx.PresetStore, ctx.Material.shader.name, entry);
+            _cachedPresets = null;
             ShaderPresetFileService.Save(System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(ctx.Material.shader)) ?? "Assets",
                 ctx.PresetStore, ShaderPresetFileService.DefaultPresetFileName);
         }

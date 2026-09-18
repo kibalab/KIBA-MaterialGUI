@@ -1,8 +1,8 @@
 {
   "name": "com.kibalab.kibamaterialgui",
   "displayName": "KIBAMaterialGUI",
-  "version": "0.1.0",
-  "unity": "2021.3",
+  "version": "0.1.1",
+  "unity": "2022.3",
   "description": "Attribute-driven Unity ShaderGUI framework for searchable, grouped, extensible material inspectors.",
   "keywords": [
     "shader",

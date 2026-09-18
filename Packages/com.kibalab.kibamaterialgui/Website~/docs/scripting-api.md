@@ -158,6 +158,7 @@ Methods:
 - `TryGetShaderAttribute(string attributeName, out ShaderAttributeInfo attribute)`
 - `GetShaderAttributes()`
 - `SetFloatValue(float value, string undoName = null)`
+- `SetIntValue(int value, string undoName = null)`
 - `SetColorValue(Color value, string undoName = null)`
 - `SetVectorValue(Vector4 value, string undoName = null)`
 - `SetTextureValue(Texture value, string undoName = null)`

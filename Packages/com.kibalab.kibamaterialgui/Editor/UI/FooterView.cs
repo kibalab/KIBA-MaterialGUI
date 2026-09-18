@@ -30,8 +30,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI
         {
             if (ctx?.Model == null) return;
 
-            var diagnostics = new System.Collections.Generic.List<MaterialGUIDiagnostic>(ctx.Model.Diagnostics);
-            ContributionRegistry.ApplyDiagnostics(ctx, diagnostics);
+            var diagnostics = ctx.Model.Diagnostics;
 
             var warningCount = 0;
             var errorCount = 0;
@@ -41,12 +40,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI
                 else if (diagnostics[i].Severity == MaterialGUIDiagnosticSeverity.Warning) warningCount++;
             }
 
-            if (warningCount == 0 && errorCount == 0) return;
+            if (diagnostics.Count == 0) return;
 
             EditorGUILayout.Space(4);
             _diagnosticsExpanded = EditorGUILayout.Foldout(
                 _diagnosticsExpanded,
-                $"Shader GUI Diagnostics: {errorCount} errors, {warningCount} warnings",
+                $"Shader GUI Diagnostics: {errorCount} errors, {warningCount} warnings, {diagnostics.Count - errorCount - warningCount} info",
                 true);
 
             if (!_diagnosticsExpanded) return;
@@ -54,11 +53,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI
             for (var i = 0; i < diagnostics.Count; i++)
             {
                 var d = diagnostics[i];
-                if (d.Severity == MaterialGUIDiagnosticSeverity.Info) continue;
-
                 var type = d.Severity == MaterialGUIDiagnosticSeverity.Error
                     ? MessageType.Error
-                    : MessageType.Warning;
+                    : d.Severity == MaterialGUIDiagnosticSeverity.Warning ? MessageType.Warning : MessageType.Info;
                 var prefix = string.IsNullOrEmpty(d.PropertyName) ? string.Empty : $"{d.PropertyName}: ";
                 EditorGUILayout.HelpBox(prefix + d.Message, type);
             }

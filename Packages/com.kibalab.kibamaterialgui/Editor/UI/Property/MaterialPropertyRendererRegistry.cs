@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer;
+using KIBA_.KIBAMaterialGUI.Editor.Extensibility;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,7 +31,14 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             public float GetHeight(in PropertyRendererArgs args)
             {
                 if (_extension != null)
-                    return _extension.GetHeight(args);
+                {
+                    try { return _extension.GetHeight(args); }
+                    catch (Exception ex) when (ex is not ExitGUIException)
+                    {
+                        MaterialGUIRegistryDiagnostics.ReportCallbackFailure(_extension, "GetHeight", ex);
+                        return EditorGUIUtility.singleLineHeight;
+                    }
+                }
                 return _materialRenderer != null
                     ? _materialRenderer.GetHeight(args)
                     : EditorGUIUtility.singleLineHeight;
@@ -39,7 +47,15 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             public Rect OnGUI(in PropertyRendererArgs args)
             {
                 if (_extension != null)
-                    return _extension.OnGUI(args);
+                {
+                    try { return _extension.OnGUI(args); }
+                    catch (Exception ex) when (ex is not ExitGUIException)
+                    {
+                        MaterialGUIRegistryDiagnostics.ReportCallbackFailure(_extension, "OnGUI", ex);
+                        EditorGUI.LabelField(args.Position, args.Label, "Renderer failed");
+                        return args.Position;
+                    }
+                }
                 return _materialRenderer != null
                     ? _materialRenderer.OnGUI(args)
                     : args.Position;

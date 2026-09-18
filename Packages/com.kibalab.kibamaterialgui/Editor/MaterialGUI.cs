@@ -59,11 +59,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor
 
         private string? _cachedLanguage;
 
-        private TreeNode? _cachedRoot;
-        private Shader? _cachedTreeShader;
-        private int _cachedFoldVersion = -1;
-        private int _cachedStateVersion = -1;
-        private int _cachedPropertiesSignature;
+        private readonly MaterialGUISession _session = new();
+        private string? _loadedStoreRoot;
+        private int _loadedStoreVersion = -1;
         private int _seenUndoVersion = -1;
 
         private string RootPath => (_material != null && _material.shader != null
@@ -107,8 +105,15 @@ namespace KIBA_.KIBAMaterialGUI.Editor
             _localizationFileService ??= new ShaderLocalizationFileService();
             _rendererRegistry ??= new MaterialPropertyRendererRegistry();
 
-            _presetStore ??= ShaderPresetFileService.Load(RootPath);
-            _localizationStore ??= ShaderLocalizationFileService.Load(RootPath);
+            var rootPath = RootPath;
+            if (_presetStore == null || _localizationStore == null || _loadedStoreRoot != rootPath ||
+                _loadedStoreVersion != ShaderPropertyAttributeCache.Version)
+            {
+                _presetStore = ShaderPresetFileService.Load(rootPath);
+                _localizationStore = ShaderLocalizationFileService.Load(rootPath);
+                _loadedStoreRoot = rootPath;
+                _loadedStoreVersion = ShaderPropertyAttributeCache.Version;
+            }
             var localizationStore = _localizationStore;
 
             _styles ??= new MaterialGUIStyles();
@@ -185,48 +190,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor
             }
 
             if (GUI.changed)
-                InvalidateFrameCaches();
+                materialEditor.Repaint();
         }
 
-        private TreeNode GetOrBuildTree(EditorContext ctx)
+        internal TreeNode GetOrBuildTree(EditorContext ctx)
         {
-            var shader = _material?.shader;
-            var foldVer = FoldState.Version;
-            var stateVer = ctx.State?.Version ?? 0;
-            var propSig = ComputePropertiesSignature(ctx.Properties);
-            if (_cachedRoot != null
-                && ReferenceEquals(_cachedTreeShader, shader)
-                && _cachedFoldVersion == foldVer
-                && _cachedStateVersion == stateVer
-                && _cachedPropertiesSignature == propSig)
-                return _cachedRoot;
-
-            _cachedRoot = TreeBuilder.Build(ctx);
-            _cachedTreeShader = shader;
-            _cachedFoldVersion = foldVer;
-            _cachedStateVersion = stateVer;
-            _cachedPropertiesSignature = propSig;
-            return _cachedRoot;
-        }
-
-        private static int ComputePropertiesSignature(IReadOnlyList<MaterialProperty> properties)
-        {
-            unchecked
-            {
-                var hash = 17;
-                if (properties == null) return hash;
-                hash = hash * 31 + properties.Count;
-                for (var i = 0; i < properties.Count; i++)
-                {
-                    var p = properties[i];
-                    if (p == null) continue;
-                    hash = hash * 31 + (p.name != null ? p.name.GetHashCode() : 0);
-                    hash = hash * 31 + (p.displayName != null ? p.displayName.GetHashCode() : 0);
-                    hash = hash * 31 + (int)p.type;
-                }
-
-                return hash;
-            }
+            return _session.GetTree(ctx);
         }
 
         private Material[] ResolveTargets()
@@ -264,7 +233,6 @@ namespace KIBA_.KIBAMaterialGUI.Editor
         private void RefreshAnimationPreviewProperties(ref MaterialProperty[] props)
         {
             RegisterAnimationPreviewRepaint(_materialEditor);
-            InvalidateFrameCaches();
 
             try
             {
@@ -354,11 +322,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor
 
         private void InvalidateFrameCaches()
         {
-            _cachedRoot = null;
-            _cachedTreeShader = null;
-            _cachedFoldVersion = -1;
-            _cachedStateVersion = -1;
-            _cachedPropertiesSignature = 0;
+            _session.Clear();
 
             _cachedTargetsSource = null;
             _cachedTargets = null;

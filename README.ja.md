@@ -10,6 +10,8 @@ KIBAMaterialGUI は、ShaderLab Attribute から Unity のマテリアルイン�
 
 ## インストール
 
+Unity **2022.3 以降**が必要です。VRChat SDK への依存はありません。
+
 VCC に KIBALAB VPM listing を追加し、`KIBAMaterialGUI` をインストールします。
 
 ```text

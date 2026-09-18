@@ -2,12 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using KIBA_.KIBAMaterialGUI.Editor.Localization;
+using KIBA_.KIBAMaterialGUI.Editor.Extensibility;
 using KIBA_.KIBAMaterialGUI.Editor.UI;
+using KIBA_.KIBAMaterialGUI.Editor.UI.Property;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace KIBA_.KIBAMaterialGUI.Editor.Core
 {
@@ -63,58 +63,80 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             var diagnostics = new List<MaterialGUIDiagnostic>();
             var shader = ctx.Material != null ? ctx.Material.shader : null;
 
-            Material? defaultMaterial = null;
-            try
+            var properties = ctx.Properties;
+            for (var i = 0; i < properties.Count; i++)
             {
-                if (shader != null)
-                    defaultMaterial = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
+                var property = properties[i];
+                if (property == null) continue;
 
-                var properties = ctx.Properties;
-                for (var i = 0; i < properties.Count; i++)
+                ctx.DisplayParser.ParseDisplay(property.displayName, out _, out var rawLabel);
+                var label = string.IsNullOrEmpty(rawLabel) ? property.name : rawLabel;
+                var model = new ShaderPropertyModel
                 {
-                    var property = properties[i];
-                    if (property == null) continue;
+                    Property = property,
+                    PropertyName = property.name,
+                    Label = label,
+                    TranslatedLabel = LocalizationHelper.TranslateProp(ctx, property.name, label),
+                    GroupPath = ResolveGroupPath(shader, property.name),
+                    PropertyType = property.type,
+                    Attributes = GetAttributes(shader, property.name)
+                };
 
-                    ctx.DisplayParser.ParseDisplay(property.displayName, out _, out var rawLabel);
-                    var label = string.IsNullOrEmpty(rawLabel) ? property.name : rawLabel;
-                    var groupPath = ResolveGroupPath(shader, property.name);
-                    var attrs = GetAttributes(shader, property.name);
-
-                    var model = new ShaderPropertyModel
-                    {
-                        Property = property,
-                        PropertyName = property.name,
-                        Label = label,
-                        TranslatedLabel = LocalizationHelper.TranslateProp(ctx, property.name, label),
-                        GroupPath = groupPath,
-                        PropertyType = property.type,
-                        Attributes = attrs,
-                        Changed = IsChanged(ctx, defaultMaterial, property),
-                        Mixed = property.hasMixedValue,
-                    };
-
-                    ApplyConditionalVisibility(ctx, model);
-                    AddDiagnostics(ctx, shader, model);
-                    allProperties.Add(model);
-                    AddToTree(ctx, root, model);
-                }
+                AddDiagnostics(ctx, shader, model);
+                model.StaticDiagnosticCount = model.Diagnostics.Count;
+                allProperties.Add(model);
+                AddToTree(ctx, root, model);
             }
-            finally
+            var result = new MaterialGUIModel(root, allProperties, diagnostics);
+            ctx.Model = result;
+            Refresh(ctx, result);
+            return result;
+        }
+
+        internal static void Refresh(EditorContext ctx, MaterialGUIModel model)
+        {
+            var defaults = ShaderDefaultMaterialCache.Get(ctx.Material != null ? ctx.Material.shader : null);
+            // Rebind Unity's live wrappers without replacing their animation callbacks.
+            for (var i = 0; i < ctx.Properties.Count; i++)
             {
-                if (defaultMaterial != null)
-                    Object.DestroyImmediate(defaultMaterial);
+                var property = ctx.Properties[i];
+                if (property == null || !model.TryGetProperty(property.name, out var entry)) continue;
+                entry.Property = property;
+                entry.Changed = IsChanged(ctx, defaults, property);
+                entry.Mixed = property.hasMixedValue;
+                entry.TranslatedLabel = LocalizationHelper.TranslateProp(ctx, property.name, entry.Label);
+                var diagnostics = entry.MutableDiagnostics;
+                if (diagnostics.Count > entry.StaticDiagnosticCount)
+                    diagnostics.RemoveRange(entry.StaticDiagnosticCount, diagnostics.Count - entry.StaticDiagnosticCount);
             }
 
-            ApplyFilter(ctx, root);
-            CollectDiagnostics(root, diagnostics);
-            return new MaterialGUIModel(root, allProperties, diagnostics);
+            var allDiagnostics = model.MutableDiagnostics;
+            allDiagnostics.Clear();
+            foreach (var group in model.Groups) group.DirectWarningCount = 0;
+            for (var i = 0; i < model.Properties.Count; i++)
+                ApplyConditionalVisibility(ctx, model.Properties[i]);
+
+            ContributionRegistry.ApplyDiagnostics(ctx, allDiagnostics);
+            for (var i = 0; i < allDiagnostics.Count; i++)
+            {
+                var diagnostic = allDiagnostics[i];
+                if (!string.IsNullOrEmpty(diagnostic.PropertyName) && model.TryGetProperty(diagnostic.PropertyName!, out var property))
+                    property.MutableDiagnostics.Add(diagnostic);
+                else if (diagnostic.Severity != MaterialGUIDiagnosticSeverity.Info &&
+                         !string.IsNullOrEmpty(diagnostic.GroupPath) && model.TryGetGroup(diagnostic.GroupPath!, out var group))
+                    group.DirectWarningCount++;
+            }
+            // Property diagnostics already include attributed provider messages.
+            allDiagnostics.RemoveAll(d => !string.IsNullOrEmpty(d.PropertyName) && model.TryGetProperty(d.PropertyName!, out _));
+            CollectDiagnostics(model.Root, allDiagnostics);
+            ApplyFilter(ctx, model.Root);
         }
 
         internal static void ApplyFilter(EditorContext ctx, GroupNodeModel root)
         {
             var search = ctx.State?.Search ?? ctx.Search ?? string.Empty;
             var filters = ctx.State?.Filters ?? MaterialGUIFilter.None;
-            ApplyFilterRecursive(ctx, root, search, filters, true);
+            ApplyFilterRecursive(ctx, root, search, filters, true, false);
         }
 
         private static bool ApplyFilterRecursive(
@@ -122,24 +144,29 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             GroupNodeModel node,
             string search,
             MaterialGUIFilter filters,
-            bool isRoot)
+            bool isRoot,
+            bool inheritedGroupWarning)
         {
             node.TotalPropertyCount = 0;
             node.VisiblePropertyCount = 0;
             node.ChangedCount = 0;
-            node.WarningCount = 0;
+            node.WarningCount = node.DirectWarningCount;
+            var groupWarning = inheritedGroupWarning || node.DirectWarningCount > 0;
             node.HasMixed = false;
-            node.SearchMatchedSelf = MatchesNodeSearch(ctx, node, search);
+            node.SearchMatchedSelf = !isRoot && MatchesNodeSearch(ctx, node, search);
 
             var anyVisible = false;
             for (var i = 0; i < node.Properties.Count; i++)
             {
                 var property = node.Properties[i];
                 property.SearchMatched = MatchesSearch(ctx, property, search);
-                property.Visible = property.ConditionVisible && property.SearchMatched && PassFilters(property, filters);
-                if (property.ConditionVisible)
+                var eligible = property.ConditionVisible &&
+                    (property.Property.flags & MaterialProperty.PropFlags.HideInInspector) == 0;
+                property.Visible = eligible && (property.SearchMatched || node.SearchMatchedSelf) && PassFilters(property, filters, groupWarning);
+                if (eligible)
                     node.TotalPropertyCount++;
 
+                if (!eligible) continue;
                 if (property.Changed) node.ChangedCount++;
                 if (property.WarningCount > 0) node.WarningCount += property.WarningCount;
                 if (property.Mixed) node.HasMixed = true;
@@ -151,7 +178,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
             foreach (var child in node.Children.Values)
             {
-                var childVisible = ApplyFilterRecursive(ctx, child, search, filters, false);
+                var childVisible = ApplyFilterRecursive(ctx, child, search, filters, false, groupWarning);
                 node.TotalPropertyCount += child.TotalPropertyCount;
                 node.VisiblePropertyCount += child.VisiblePropertyCount;
                 node.ChangedCount += child.ChangedCount;
@@ -161,7 +188,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             }
 
             var hasQuery = !string.IsNullOrWhiteSpace(search);
-            node.Visible = isRoot || anyVisible || (hasQuery && node.SearchMatchedSelf);
+            node.Visible = isRoot || anyVisible;
+            node.Expanded = isRoot || (hasQuery && anyVisible) || FoldState.GetFold(ctx.PreferencesKeyPrefix, node.PathKey, true);
             return node.Visible;
         }
 
@@ -249,10 +277,10 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             return false;
         }
 
-        private static bool PassFilters(ShaderPropertyModel model, MaterialGUIFilter filters)
+        private static bool PassFilters(ShaderPropertyModel model, MaterialGUIFilter filters, bool groupWarning)
         {
             if ((filters & MaterialGUIFilter.Changed) != 0 && !model.Changed) return false;
-            if ((filters & MaterialGUIFilter.Warnings) != 0 && model.WarningCount == 0) return false;
+            if ((filters & MaterialGUIFilter.Warnings) != 0 && model.WarningCount == 0 && !groupWarning) return false;
 
             var typeFilter =
                 (filters & (MaterialGUIFilter.Textures | MaterialGUIFilter.Numbers | MaterialGUIFilter.Colors)) != 0;
@@ -267,6 +295,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             if ((filters & MaterialGUIFilter.Numbers) != 0 &&
                 (model.PropertyType == MaterialProperty.PropType.Float ||
                  model.PropertyType == MaterialProperty.PropType.Range ||
+                 model.PropertyType == MaterialProperty.PropType.Int ||
                  model.PropertyType == MaterialProperty.PropType.Vector))
                 return true;
 
@@ -306,6 +335,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
             switch (property.type)
             {
+                case MaterialProperty.PropType.Int:
+                    return mat.GetInteger(property.name) != defaultMaterial.GetInteger(property.name);
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
                     return !Mathf.Approximately(mat.GetFloat(property.name), defaultMaterial.GetFloat(property.name));
@@ -427,7 +458,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             satisfied = true;
             error = string.Empty;
 
-            var controller = FindProperty(ctx.Properties, sourcePropertyName);
+            var controller = ctx.Model != null && ctx.Model.TryGetProperty(sourcePropertyName, out var source)
+                ? source.Property : FindProperty(ctx.Properties, sourcePropertyName);
             if (controller == null)
             {
                 error = $"[ShowIf] controller property '{sourcePropertyName}' was not found.";
@@ -435,9 +467,10 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             }
 
             if (controller.type != MaterialProperty.PropType.Float &&
+                controller.type != MaterialProperty.PropType.Int &&
                 controller.type != MaterialProperty.PropType.Range)
             {
-                error = $"[ShowIf] controller property '{sourcePropertyName}' must be Float or Range.";
+                error = $"[ShowIf] controller property '{sourcePropertyName}' must be numeric.";
                 return false;
             }
 
@@ -449,7 +482,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
             if (targets.Count == 0)
             {
-                satisfied = Mathf.Approximately(controller.floatValue, expectedValue);
+                satisfied = Mathf.Approximately(controller.type == MaterialProperty.PropType.Int ? controller.intValue : controller.floatValue, expectedValue);
                 return true;
             }
 
@@ -457,7 +490,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             {
                 var mat = targets[i];
                 if (mat == null || !mat.HasProperty(sourcePropertyName)) continue;
-                if (Mathf.Approximately(mat.GetFloat(sourcePropertyName), expectedValue))
+                if (Mathf.Approximately(controller.type == MaterialProperty.PropType.Int ? mat.GetInteger(sourcePropertyName) : mat.GetFloat(sourcePropertyName), expectedValue))
                 {
                     satisfied = true;
                     return true;
@@ -492,10 +525,11 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
                 AddInvalidKnownAttributeDiagnostic(model, attr);
             }
 
-            if (ctx.LocalizationStore != null &&
+            if (ctx.LocalizationStore != null && ctx.LocalizationStore.Languages.Count > 0 &&
                 !string.IsNullOrEmpty(ctx.CurrentLanguage) &&
                 !string.IsNullOrEmpty(model.PropertyName) &&
-                string.Equals(model.TranslatedLabel, model.Label, StringComparison.Ordinal))
+                string.IsNullOrEmpty(ctx.LocalizationStore.Get(ctx.CurrentLanguage, "propName:" + model.PropertyName, string.Empty)) &&
+                string.IsNullOrEmpty(ctx.LocalizationStore.Get(ctx.CurrentLanguage, "prop:" + model.Label, string.Empty)))
             {
                 model.MutableDiagnostics.Add(new MaterialGUIDiagnostic(
                     MaterialGUIDiagnosticSeverity.Info,
@@ -586,11 +620,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
         private static string[] SplitArgs(string args)
         {
-            if (string.IsNullOrWhiteSpace(args)) return Array.Empty<string>();
-            return args.Split(',')
-                .Select(static s => s.Trim().Trim('"', '\''))
-                .Where(static s => s.Length > 0)
-                .ToArray();
+            return ShaderAttributeArgumentParser.Split(args);
         }
 
         private static void CollectDiagnostics(GroupNodeModel root, List<MaterialGUIDiagnostic> diagnostics)

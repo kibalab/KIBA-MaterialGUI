@@ -39,6 +39,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Windows
         private HeaderView _header;
         private PresetController _presets;
         private RenderQueueController _renderQueue;
+        private readonly MaterialGUIState _state = new();
+        private readonly MaterialGUISession _session = new();
+        private int _loadedStoreVersion = -1;
 
         private string RootPath => _material != null && _material.shader != null
             ? Path.GetDirectoryName(AssetDatabase.GetAssetPath(_material.shader))
@@ -151,7 +154,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Windows
                     CurrentLanguage = EditorPrefs.GetString(PreferencesLanguageKey, _localizationStore?.DefaultCode ?? "EN"),
                     Styles = _styles,
                     PreferencesKeyPrefix = PreferencesKeyPrefix,
-                    PreferencesLanguageKey = PreferencesLanguageKey
+                    PreferencesLanguageKey = PreferencesLanguageKey,
+                    State = _state,
+                    Search = _state.Search
                 };
 
                 _presets.BuildMatchedPresets(ctx);
@@ -180,7 +185,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Windows
 
                 EditorGUILayout.Space(6);
 
-                var root = TreeBuilder.Build(ctx);
+                var root = _session.GetTree(ctx);
 
                 if (_showAllGroups)
                 {
@@ -195,7 +200,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Windows
                     return;
                 }
 
-                DrawSingleGroup(ctx, node, 0);
+                if (node.Model.Visible) DrawSingleGroup(ctx, node, 0);
             }
         }
 
@@ -218,12 +223,14 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Windows
             var rootPath = RootPath;
             if (_presetStore != null &&
                 _localizationStore != null &&
+                _loadedStoreVersion == ShaderPropertyAttributeCache.Version &&
                 string.Equals(_loadedStoreRootPath, rootPath, System.StringComparison.Ordinal))
                 return;
 
             _presetStore = ShaderPresetFileService.Load(rootPath);
             _localizationStore = ShaderLocalizationFileService.Load(rootPath);
             _loadedStoreRootPath = rootPath;
+            _loadedStoreVersion = ShaderPropertyAttributeCache.Version;
         }
 
         private void DrawSingleGroup(EditorContext ctx, TreeNode child, int depth)

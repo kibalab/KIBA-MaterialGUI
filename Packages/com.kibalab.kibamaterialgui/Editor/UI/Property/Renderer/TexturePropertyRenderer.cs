@@ -54,8 +54,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer
                 fieldRect.width,
                 slotH);
 
+            EditorGUI.BeginChangeCheck();
             var nextTex = DrawTextureSlot(slotRect, args.Material, args.Property, args.Property.textureValue, args.MiniGray);
-            if (nextTex != args.Property.textureValue)
+            if (EditorGUI.EndChangeCheck() || nextTex != args.Property.textureValue)
                 args.SetTextureValue(nextTex);
 
             if (ShouldDrawScaleOffset(args.Property))
@@ -132,6 +133,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer
                 (e.keyCode == KeyCode.Delete || e.keyCode == KeyCode.Backspace))
             {
                 current = null;
+                GUI.changed = true;
                 e.Use();
             }
         }
@@ -156,6 +158,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer
             {
                 DragAndDrop.AcceptDrag();
                 current = tex;
+                GUI.changed = true;
             }
 
             e.Use();
@@ -183,7 +186,10 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer
             if (e.commandName != "ObjectSelectorUpdated" && e.commandName != "ObjectSelectorClosed") return;
             if (EditorGUIUtility.GetObjectPickerControlID() != pickerId) return;
 
-            current = EditorGUIUtility.GetObjectPickerObject() as Texture;
+            var selected = EditorGUIUtility.GetObjectPickerObject() as Texture;
+            if (e.commandName == "ObjectSelectorUpdated" || current != selected)
+                GUI.changed = true;
+            current = selected;
             e.Use();
         }
 

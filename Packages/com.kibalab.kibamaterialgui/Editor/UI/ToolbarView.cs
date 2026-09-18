@@ -69,6 +69,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI
             ContributionRegistry.ApplyToolbar(ctx, model, contributionGroupPath);
             ContributionRegistry.ApplyFilterToolbar(ctx, model, contributionGroupPath);
             configure?.Invoke(model);
+            model.Items.Sort((a, b) => a.Order.CompareTo(b.Order));
 
             _visibleItemsBuffer.Clear();
             for (var i = 0; i < model.Items.Count; i++)
@@ -239,7 +240,6 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI
                 Order = 40
             });
 
-            model.Items.Sort((a, b) => a.Order.CompareTo(b.Order));
             return model;
         }
 

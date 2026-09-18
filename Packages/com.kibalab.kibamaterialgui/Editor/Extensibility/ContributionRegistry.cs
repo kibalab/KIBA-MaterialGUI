@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KIBA_.KIBAMaterialGUI.Editor.Core;
 using UnityEditor;
+using UnityEngine;
 
 namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
 {
@@ -173,7 +174,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
             {
                 var entry = ToolbarEntries[i];
                 if (!Match(entry.Filter, shaderName, groupPath)) continue;
-                entry.Impl.Contribute(model, args);
+                try { entry.Impl.Contribute(model, args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(entry.Impl, "Contribute", ex); }
             }
         }
 
@@ -188,7 +191,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
             {
                 var entry = MenuEntries[i];
                 if (!Match(entry.Filter, shaderName, groupPath)) continue;
-                entry.Impl.Contribute(model, args);
+                try { entry.Impl.Contribute(model, args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(entry.Impl, "Contribute", ex); }
             }
         }
 
@@ -203,7 +208,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
             {
                 var entry = GroupActionEntries[i];
                 if (!Match(entry.Filter, shaderName, groupPath)) continue;
-                entry.Impl.Contribute(model, args);
+                try { entry.Impl.Contribute(model, args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(entry.Impl, "Contribute", ex); }
             }
         }
 
@@ -218,7 +225,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
             {
                 var entry = DiagnosticEntries[i];
                 if (!Match(entry.Filter, shaderName, groupPath)) continue;
-                entry.Impl.Contribute(diagnostics, args);
+                try { entry.Impl.Contribute(diagnostics, args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(entry.Impl, "Contribute", ex); }
             }
         }
 
@@ -233,7 +242,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Extensibility
             {
                 var entry = FilterEntries[i];
                 if (!Match(entry.Filter, shaderName, groupPath)) continue;
-                entry.Impl.Contribute(model, args);
+                try { entry.Impl.Contribute(model, args); }
+                catch (Exception ex) when (ex is not ExitGUIException)
+                { MaterialGUIRegistryDiagnostics.ReportCallbackFailure(entry.Impl, "Contribute", ex); }
             }
         }
 

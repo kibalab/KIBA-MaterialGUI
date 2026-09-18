@@ -20,10 +20,13 @@
 ## Behavior
 
 - Each argument becomes one path segment.
+- Up to seven path segments are supported by the Unity hint drawer.
 - Nested paths use commas: `[Group(Surface, Detail)]`.
 - Slash-separated paths are not supported.
 - Properties without `[Group]` are shown after grouped properties.
 - Group counts, search results, reset actions, and filters use only properties that are currently visible.
+- Matching groups expand temporarily during search. Clearing the search restores their saved fold state.
+- `HideInInspector` and condition-hidden properties stay hidden even when their names match a search.
 
 ## Example
 

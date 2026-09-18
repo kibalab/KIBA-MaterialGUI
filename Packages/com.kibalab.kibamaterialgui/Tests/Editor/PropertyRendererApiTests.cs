@@ -509,7 +509,7 @@ namespace KIBA_.KIBAMaterialGUI.Tests.Editor
                 material,
                 property,
                 property.displayName,
-                EditorStyles.centeredGreyMiniLabel);
+                new GUIStyle());
         }
 
         private readonly struct MaterialScope : System.IDisposable

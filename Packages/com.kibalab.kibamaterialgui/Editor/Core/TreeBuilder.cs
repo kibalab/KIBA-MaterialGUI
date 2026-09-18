@@ -44,8 +44,6 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
                 var propertyModel = model.Properties[i];
                 node.Properties.Add(new TreeNodeProperty
                 {
-                    Property = propertyModel.Property,
-                    Label = propertyModel.Label,
                     Model = propertyModel
                 });
             }
@@ -59,8 +57,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
     internal sealed class TreeNodeProperty
     {
-        public MaterialProperty Property;
-        public string Label;
+        public MaterialProperty Property => Model.Property;
+        public string Label => Model.Label;
         public ShaderPropertyModel Model;
     }
 
@@ -70,7 +68,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
         public string PathKey;
         public List<TreeNodeProperty> Properties { get; } = new();
         public Dictionary<string, TreeNode> Children { get; } = new();
-        public bool Expanded = true;
+        private bool _expanded = true;
+        public bool Expanded
+        {
+            get => Model != null ? Model.Expanded : _expanded;
+            set { _expanded = value; if (Model != null) Model.Expanded = value; }
+        }
         public GroupNodeModel Model;
     }
 }

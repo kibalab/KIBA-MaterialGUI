@@ -26,12 +26,14 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property.Renderer
 
             var prevIndent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
+            EditorGUI.BeginChangeCheck();
             var c = EditorGUI.ColorField(fieldRect, GUIContent.none, args.Property.colorValue, true, true, hdr);
+            var changed = EditorGUI.EndChangeCheck();
             EditorGUI.indentLevel = prevIndent;
 
             EditorGUI.showMixedValue = prevMixed;
 
-            if (args.Property.colorValue != c)
+            if (changed)
                 args.SetColorValue(c);
 
             return args.Layout.IsValid ? args.Layout.FirstLineRect : args.Position;

@@ -64,35 +64,42 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
         public void SetFloatValue(float value, string? undoName = null)
         {
-            if (Mathf.Approximately(Property.floatValue, value)) return;
+            if (!Property.hasMixedValue && Mathf.Approximately(Property.floatValue, value)) return;
             RegisterPropertyValueChange(undoName);
             Property.floatValue = value;
         }
 
+        public void SetIntValue(int value, string? undoName = null)
+        {
+            if (!Property.hasMixedValue && Property.intValue == value) return;
+            RegisterPropertyValueChange(undoName);
+            Property.intValue = value;
+        }
+
         public void SetColorValue(Color value, string? undoName = null)
         {
-            if (Property.colorValue == value) return;
+            if (!Property.hasMixedValue && Property.colorValue == value) return;
             RegisterPropertyValueChange(undoName);
             Property.colorValue = value;
         }
 
         public void SetVectorValue(Vector4 value, string? undoName = null)
         {
-            if (Property.vectorValue == value) return;
+            if (!Property.hasMixedValue && Property.vectorValue == value) return;
             RegisterPropertyValueChange(undoName);
             Property.vectorValue = value;
         }
 
         public void SetTextureValue(Texture? value, string? undoName = null)
         {
-            if (Property.textureValue == value) return;
+            if (!Property.hasMixedValue && Property.textureValue == value) return;
             RegisterPropertyValueChange(undoName);
             Property.textureValue = value;
         }
 
         public void SetTextureScaleAndOffset(Vector4 value, string? undoName = null)
         {
-            if (Property.textureScaleAndOffset == value) return;
+            if (!Property.hasMixedValue && Property.textureScaleAndOffset == value) return;
             RegisterPropertyValueChange(undoName);
             Property.textureScaleAndOffset = value;
         }

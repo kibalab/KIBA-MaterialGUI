@@ -127,6 +127,7 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
         public IReadOnlyList<MaterialGUIDiagnostic> Diagnostics => _diagnosticsView;
 
         internal List<MaterialGUIDiagnostic> MutableDiagnostics => _diagnostics;
+        internal int StaticDiagnosticCount;
 
         public int WarningCount
         {
@@ -191,10 +192,14 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
 
         internal List<ShaderPropertyModel> MutableProperties => _properties;
         internal Dictionary<string, GroupNodeModel> MutableChildren => _children;
+        internal int DirectWarningCount;
     }
 
     public sealed class MaterialGUIModel
     {
+        private readonly Dictionary<string, ShaderPropertyModel> _byName = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, GroupNodeModel> _groups = new(StringComparer.Ordinal);
+        private readonly List<MaterialGUIDiagnostic> _diagnostics = new();
         public GroupNodeModel Root { get; }
         public IReadOnlyList<ShaderPropertyModel> Properties { get; }
         public IReadOnlyList<MaterialGUIDiagnostic> Diagnostics { get; }
@@ -205,8 +210,23 @@ namespace KIBA_.KIBAMaterialGUI.Editor.Core
             IReadOnlyList<MaterialGUIDiagnostic> diagnostics)
         {
             Root = root;
+            IndexGroups(root);
             Properties = ToReadOnly(properties);
-            Diagnostics = ToReadOnly(diagnostics);
+            for (var i = 0; i < Properties.Count; i++)
+                _byName[Properties[i].PropertyName] = Properties[i];
+            for (var i = 0; i < diagnostics.Count; i++) _diagnostics.Add(diagnostics[i]);
+            Diagnostics = _diagnostics.AsReadOnly();
+        }
+
+        internal List<MaterialGUIDiagnostic> MutableDiagnostics => _diagnostics;
+        internal bool TryGetProperty(string name, out ShaderPropertyModel property) => _byName.TryGetValue(name, out property);
+        internal bool TryGetGroup(string path, out GroupNodeModel group) => _groups.TryGetValue(path, out group);
+        internal IEnumerable<GroupNodeModel> Groups => _groups.Values;
+
+        private void IndexGroups(GroupNodeModel group)
+        {
+            _groups[group.PathKey] = group;
+            foreach (var child in group.Children.Values) IndexGroups(child);
         }
 
         private static IReadOnlyList<T> ToReadOnly<T>(IReadOnlyList<T>? source)

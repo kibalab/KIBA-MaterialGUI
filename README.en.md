@@ -10,6 +10,8 @@ Shader authors can add grouping, search, conditional visibility, validation, pre
 
 ## Installation
 
+Requires Unity **2022.3 or newer**. There is no VRChat SDK dependency.
+
 Add the KIBALAB VPM listing to VCC, then install `KIBAMaterialGUI`.
 
 ```text

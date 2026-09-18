@@ -73,7 +73,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
                 ctx.Styles.MiniGray,
                 layout,
                 propertyModel);
-            var previousValue = new PropertyValueSnapshot(property);
+            var previousValue = new PropertyValueSnapshot(property,
+                MaterialGUIPropertyValidationRegistry.HasValidators(ctx.Material.shader, property.name));
 
             PropertyAnimationContextMenu.HandleContextClick(ctx, property, label, layout.MainRect);
 
@@ -85,20 +86,24 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
                 try
                 {
                     EditorGUI.BeginChangeCheck();
-                    resolved.OnGUI(args);
-                    var rendererChanged = EditorGUI.EndChangeCheck();
+                    bool rendererChanged;
+                    try { resolved.OnGUI(args); }
+                    finally { rendererChanged = EditorGUI.EndChangeCheck(); }
 
-                    var accepted = MaterialGUIPropertyValidationRegistry.Apply(ctx, property, label, layout);
-                    if (!accepted)
+                    var valueChanged = !previousValue.Matches(property);
+                    if (valueChanged || rendererChanged)
                     {
-                        previousValue.Restore(property);
-                        GUI.changed = true;
-                    }
-                    else if ((rendererChanged || !previousValue.Matches(property)) &&
-                             !previousValue.Matches(property) &&
-                             !RegisteredPropertyChanges.Contains(property))
-                    {
-                        RegisterPropertyValueChange(ctx.MaterialEditor, property, $"Change {label}");
+                        var accepted = MaterialGUIPropertyValidationRegistry.Apply(ctx, property, label, layout);
+                        if (!accepted)
+                        {
+                            previousValue.Restore(property);
+                            GUI.changed = true;
+                            ctx.MaterialEditor?.Repaint();
+                        }
+                        else if (!previousValue.Matches(property) && !RegisteredPropertyChanges.Contains(property))
+                        {
+                            RegisterPropertyValueChange(ctx.MaterialEditor, property, $"Change {label}");
+                        }
                     }
                 }
                 finally
@@ -225,18 +230,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
         private static ShaderPropertyModel? FindModel(EditorContext ctx, MaterialProperty property)
         {
-            var model = ctx?.Model;
-            if (model == null || property == null) return null;
-
-            var properties = model.Properties;
-            for (var i = 0; i < properties.Count; i++)
-            {
-                var candidate = properties[i];
-                if (candidate != null && candidate.Property == property)
-                    return candidate;
-            }
-
-            return null;
+            return ctx?.Model != null && property != null &&
+                   ctx.Model.TryGetProperty(property.name, out var model) ? model : null;
         }
 
         private static void DrawChangedMarker(Rect mainRect, ShaderPropertyModel? model)
@@ -251,8 +246,16 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
         public static void ResetPropertyToShaderDefault(EditorContext ctx, MaterialProperty property)
         {
+            ResetPropertiesToShaderDefaults(ctx, new[] { property });
+        }
+
+        public static void ResetPropertiesToShaderDefaults(EditorContext ctx, IEnumerable<MaterialProperty> properties)
+        {
+            if (ctx == null || properties == null) return;
             var targets = GetTargetMaterials(ctx);
             if (targets.Length == 0) return;
+            var propertyList = properties.Where(p => p != null).Distinct().ToArray();
+            if (propertyList.Length == 0) return;
 
             var objects = targets
                 .Where(static m => m != null)
@@ -260,33 +263,17 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
                 .ToArray();
             if (objects.Length == 0) return;
 
-            Undo.RecordObjects(objects, "Reset Property");
-
-            var defaultsByShader = new Dictionary<Shader, Material>();
-            try
+            Undo.RecordObjects(objects, "Reset Properties");
+            for (var i = 0; i < targets.Length; i++)
             {
-                for (var i = 0; i < targets.Length; i++)
-                {
-                    var mat = targets[i];
-                    if (mat == null || mat.shader == null) continue;
-
-                    if (!defaultsByShader.TryGetValue(mat.shader, out var defaultMat))
-                    {
-                        defaultMat = new Material(mat.shader);
-                        defaultsByShader.Add(mat.shader, defaultMat);
-                    }
-
+                var mat = targets[i];
+                if (mat == null || mat.shader == null) continue;
+                var defaultMat = ShaderDefaultMaterialCache.Get(mat.shader);
+                if (defaultMat == null) continue;
+                foreach (var property in propertyList)
                     ApplyDefaultValue(mat, defaultMat, property);
-                    EditorUtility.SetDirty(mat);
-                }
-            }
-            finally
-            {
-                foreach (var kv in defaultsByShader)
-                {
-                    if (kv.Value != null)
-                        Object.DestroyImmediate(kv.Value);
-                }
+                MaterialEditor.ApplyMaterialPropertyDrawers(mat);
+                EditorUtility.SetDirty(mat);
             }
 
             try
@@ -300,22 +287,8 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
                     "Failed to refresh material editor after reset: " + ex.Message);
             }
 
-            var preview = FindFirstMaterial(targets) ?? ctx.Material;
-            if (preview != null)
-                SyncPropertyWrapperFromMaterial(property, preview);
-
             GUI.changed = true;
             ctx.MaterialEditor?.Repaint();
-        }
-
-        public static void ResetPropertiesToShaderDefaults(EditorContext ctx, IEnumerable<MaterialProperty> properties)
-        {
-            if (ctx == null || properties == null) return;
-            foreach (var property in properties)
-            {
-                if (property == null) continue;
-                ResetPropertyToShaderDefault(ctx, property);
-            }
         }
 
         private static void ApplyDefaultValue(Material target, Material defaultMat, MaterialProperty property)
@@ -326,6 +299,9 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
             switch (property.type)
             {
+                case MaterialProperty.PropType.Int:
+                    target.SetInteger(property.name, has ? defaultMat.GetInteger(property.name) : 0);
+                    break;
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
                     target.SetFloat(property.name, has ? defaultMat.GetFloat(property.name) : 0f);
@@ -362,54 +338,39 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
             return System.Array.Empty<Material>();
         }
 
-        private static Material? FindFirstMaterial(Material[] targets)
-        {
-            if (targets == null || targets.Length == 0) return null;
-            for (var i = 0; i < targets.Length; i++)
-            {
-                if (targets[i] != null) return targets[i];
-            }
-            return null;
-        }
-
-        private static void SyncPropertyWrapperFromMaterial(MaterialProperty property, Material material)
-        {
-            if (property == null || material == null) return;
-            if (!material.HasProperty(property.name)) return;
-
-            switch (property.type)
-            {
-                case MaterialProperty.PropType.Float:
-                case MaterialProperty.PropType.Range:
-                    property.floatValue = material.GetFloat(property.name);
-                    break;
-                case MaterialProperty.PropType.Color:
-                    property.colorValue = material.GetColor(property.name);
-                    break;
-                case MaterialProperty.PropType.Vector:
-                    property.vectorValue = material.GetVector(property.name);
-                    break;
-                case MaterialProperty.PropType.Texture:
-                    property.textureValue = material.GetTexture(property.name);
-                    var scale = material.GetTextureScale(property.name);
-                    var offset = material.GetTextureOffset(property.name);
-                    property.textureScaleAndOffset = new Vector4(scale.x, scale.y, offset.x, offset.y);
-                    break;
-            }
-        }
-
         private readonly struct PropertyValueSnapshot
         {
+            private readonly bool _mixed;
+            private readonly MaterialProperty[]? _targetValues;
+            private readonly string[][]? _targetKeywords;
             private readonly MaterialProperty.PropType _type;
+            private readonly int _intValue;
             private readonly float _floatValue;
             private readonly Color _colorValue;
             private readonly Vector4 _vectorValue;
             private readonly Texture? _textureValue;
             private readonly Vector4 _textureScaleOffset;
 
-            public PropertyValueSnapshot(MaterialProperty property)
+            public PropertyValueSnapshot(MaterialProperty property) : this(property, true) { }
+
+            public PropertyValueSnapshot(MaterialProperty property, bool captureTargets)
             {
+                _mixed = property.hasMixedValue;
+                _targetValues = null;
+                _targetKeywords = null;
+                if (captureTargets)
+                {
+                    var targets = property.targets;
+                    _targetValues = new MaterialProperty[targets.Length];
+                    _targetKeywords = new string[targets.Length][];
+                    for (var i = 0; i < targets.Length; i++)
+                    {
+                        _targetValues[i] = MaterialEditor.GetMaterialProperty(new[] { targets[i] }, property.name);
+                        _targetKeywords[i] = targets[i] is Material material ? material.shaderKeywords : System.Array.Empty<string>();
+                    }
+                }
                 _type = property.type;
+                _intValue = property.type == MaterialProperty.PropType.Int ? property.intValue : 0;
                 _floatValue = 0f;
                 _colorValue = default;
                 _vectorValue = default;
@@ -437,8 +398,37 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
             public void Restore(MaterialProperty property)
             {
+                if (_targetValues != null)
+                {
+                    // Never write the representative value back across a mixed selection.
+                    for (var i = 0; i < _targetValues.Length; i++)
+                    {
+                        var saved = _targetValues[i];
+                        if (saved.targets[0] is not Material target || target == null) continue;
+                        switch (_type)
+                        {
+                            case MaterialProperty.PropType.Int: target.SetInteger(saved.name, saved.intValue); break;
+                            case MaterialProperty.PropType.Float:
+                            case MaterialProperty.PropType.Range: target.SetFloat(saved.name, saved.floatValue); break;
+                            case MaterialProperty.PropType.Color: target.SetColor(saved.name, saved.colorValue); break;
+                            case MaterialProperty.PropType.Vector: target.SetVector(saved.name, saved.vectorValue); break;
+                            case MaterialProperty.PropType.Texture:
+                                target.SetTexture(saved.name, saved.textureValue);
+                                var st = saved.textureScaleAndOffset;
+                                target.SetTextureScale(saved.name, new Vector2(st.x, st.y));
+                                target.SetTextureOffset(saved.name, new Vector2(st.z, st.w));
+                                break;
+                        }
+                        target.shaderKeywords = _targetKeywords![i];
+                        EditorUtility.SetDirty(target);
+                    }
+                    return;
+                }
                 switch (_type)
                 {
+                    case MaterialProperty.PropType.Int:
+                        property.intValue = _intValue;
+                        break;
                     case MaterialProperty.PropType.Float:
                     case MaterialProperty.PropType.Range:
                         property.floatValue = _floatValue;
@@ -458,10 +448,12 @@ namespace KIBA_.KIBAMaterialGUI.Editor.UI.Property
 
             public bool Matches(MaterialProperty property)
             {
-                if (property == null || property.type != _type) return false;
+                if (property == null || property.type != _type || property.hasMixedValue != _mixed) return false;
 
                 switch (_type)
                 {
+                    case MaterialProperty.PropType.Int:
+                        return property.intValue == _intValue;
                     case MaterialProperty.PropType.Float:
                     case MaterialProperty.PropType.Range:
                         return Mathf.Approximately(property.floatValue, _floatValue);
